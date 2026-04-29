@@ -15,6 +15,7 @@ export const getCart = (): CartItem[] => {
 
 export const saveCart = (cart: CartItem[]) => {
   localStorage.setItem("cart", JSON.stringify(cart));
+  window.dispatchEvent(new Event("cartUpdated"));
 };
 
 export const clearCart = () => {

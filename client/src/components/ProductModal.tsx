@@ -320,7 +320,8 @@
 // export default ProductModal;
 
 import React, { useState, useEffect } from "react";
-import { addToCart } from "../utils/cartUtils";
+import { useCart } from "../context/CartContext";
+import { useNotificationContext } from "../context/NotificationContext";
 
 interface Weight {
   label: string;
@@ -345,14 +346,19 @@ const ProductModal = ({
   product: Product;
   onClose: () => void;
 }) => {
+  const { success, error } = useNotificationContext();
+  const { addToCart } = useCart();
   const [qty, setQty] = useState(1);
   const [weights, setWeights] = useState<Weight[]>([]);
   const [selectedWeight, setSelectedWeight] = useState<Weight | null>(null);
-  const [mainImg, setMainImg] = useState(
-    product.image
-      ? `http://localhost:5000${product.image}`
-      : "/images/placeholder.jpg"
-  );
+
+  const getImageUrl = (image: string | undefined): string => {
+    if (!image) return "/images/placeholder.jpg";
+    if (image.startsWith("http")) return image;
+    return `http://localhost:5000${image}`;
+  };
+
+  const [mainImg, setMainImg] = useState(getImageUrl(product.image));
 
   // Hardcode default weights dynamically here
   useEffect(() => {
@@ -378,52 +384,48 @@ const ProductModal = ({
       price: basePrice * weightMultiplier,
       image: mainImg,
       qty,
+      variant: selectedWeight?.label, // ✅ Store variant for proper matching
     });
-    alert("Added to cart ✅");
+    success("🛒 Added to cart!");
     onClose();
   };
 
   return (
     <div
-      className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
-      style={{ backgroundColor: "rgba(0,0,0,0.6)", zIndex: 1050 }}
+      className="fixed inset-0 top-0 left-0 w-full h-full flex items-center justify-center z-50"
+      style={{ backgroundColor: "rgba(0,0,0,0.6)" }}
     >
       <div
-        className="bg-white rounded shadow-lg p-4"
-        style={{ maxWidth: "900px", width: "100%", position: "relative" }}
+        className="bg-white rounded-lg shadow-2xl p-6 max-w-4xl w-full mx-4 relative"
       >
         {/* Close Button */}
         <button
-          className="btn btn-sm btn-danger position-absolute top-0 end-0 m-3"
+          className="px-2 py-2 bg-red-600 hover:bg-red-700 text-white rounded absolute top-4 right-4"
           onClick={onClose}
         >
           ✖
         </button>
 
-        <div className="row g-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Left: Images */}
-          <div className="col-md-6">
+          <div>
             <img
               src={mainImg}
               alt={product.name}
-              className="img-fluid rounded shadow"
-              style={{ maxHeight: "350px", objectFit: "cover", width: "100%" }}
+              className="w-full h-80 object-cover rounded-lg shadow"
             />
             {product.images && product.images.length > 1 && (
-              <div className="d-flex gap-2 mt-3 overflow-auto">
+              <div className="flex gap-2 mt-3 overflow-x-auto">
                 {product.images.map((img, i) => (
                   <img
                     key={i}
-                    src={`http://localhost:5000${img}`}
+                    src={getImageUrl(img)}
                     alt={`thumb-${i}`}
-                    className="img-thumbnail"
+                    className="w-20 h-20 object-cover rounded cursor-pointer border-2 border-gray-200 hover:border-blue-500"
                     style={{
-                      height: "80px",
-                      width: "80px",
-                      objectFit: "cover",
                       cursor: "pointer",
                     }}
-                    onClick={() => setMainImg(`http://localhost:5000${img}`)}
+                    onClick={() => setMainImg(getImageUrl(img))}
                   />
                 ))}
               </div>
@@ -431,20 +433,20 @@ const ProductModal = ({
           </div>
 
           {/* Right: Product Info */}
-          <div className="col-md-6">
-            <h3 className="fw-bold">{product.name}</h3>
-            <p className="text-muted">{product.category}</p>
-            <p>{product.description}</p>
+          <div>
+            <h3 className="font-bold text-2xl text-gray-800">{product.name}</h3>
+            <p className="text-gray-500">{product.category}</p>
+            <p className="text-gray-700 mb-3">{product.description}</p>
 
             {/* Price */}
-            <h4 className="text-warning fw-bold">₹{finalPrice.toFixed(2)}</h4>
+            <h4 className="text-yellow-600 font-bold text-2xl mb-4">₹{finalPrice.toFixed(2)}</h4>
 
             {/* Weight Selection */}
             {weights.length > 0 && (
-              <div className="mb-3">
-                <label className="fw-bold">Select Weight:</label>
+              <div className="mb-4">
+                <label className="font-bold block mb-2">Select Weight:</label>
                 <select
-                  className="form-select w-50"
+                  className="border border-gray-300 rounded px-3 py-2 w-1/2"
                   value={selectedWeight?.label}
                   onChange={(e) =>
                     setSelectedWeight(
@@ -462,16 +464,16 @@ const ProductModal = ({
             )}
 
             {/* Quantity */}
-            <div className="d-flex align-items-center gap-2 mb-3">
+            <div className="flex items-center gap-2 mb-4">
               <button
-                className="btn btn-outline-secondary"
+                className="px-3 py-2 border border-gray-400 hover:bg-gray-100 rounded transition-colors"
                 onClick={() => setQty(qty > 1 ? qty - 1 : 1)}
               >
-                -
+                −
               </button>
-              <span className="fw-bold">{qty}</span>
+              <span className="font-bold text-lg">{qty}</span>
               <button
-                className="btn btn-outline-secondary"
+                className="px-3 py-2 border border-gray-400 hover:bg-gray-100 rounded transition-colors"
                 onClick={() => setQty(qty + 1)}
               >
                 +
@@ -479,21 +481,21 @@ const ProductModal = ({
             </div>
 
             {/* Buttons */}
-            <div className="d-flex gap-2">
+            <div className="flex gap-2">
               <button
-                className="btn btn-warning flex-grow-1"
+                className="flex-1 px-4 py-3 bg-yellow-500 hover:bg-yellow-600 text-white font-bold rounded transition-colors"
                 onClick={handleAddToCart}
               >
-                Add to Cart
+                🛒 Add to Cart
               </button>
               <button
-                className="btn btn-success flex-grow-1"
+                className="flex-1 px-4 py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded transition-colors"
                 onClick={() => {
                   handleAddToCart();
                   window.location.href = "/orders";
                 }}
               >
-                Buy Now
+                ⚡ Buy Now
               </button>
             </div>
           </div>

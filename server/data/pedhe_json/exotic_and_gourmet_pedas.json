@@ -11,7 +11,7 @@
         { "label": "500g", "multiplier": 1.9 },
         { "label": "1kg", "multiplier": 3.7 }
       ],
-      "image": "/images/exotic_&_gourmet_pedas/saffron_pistachio_peda.jpeg",
+      "image": "http://localhost:5000/images/exotic_and_gourmet_pedas/saffron_pistachio_peda.jpeg",
       "availability": true
     },
     {
@@ -25,7 +25,7 @@
         { "label": "500g", "multiplier": 1.9 },
         { "label": "1kg", "multiplier": 3.7 }
       ],
-      "image": "/images/exotic_&_gourmet_pedas/rose_gold_peda.jpeg",
+      "image": "http://localhost:5000/images/exotic_and_gourmet_pedas/rose_gold_peda.jpeg",
       "availability": true
     },
     {
@@ -34,7 +34,7 @@
       "category": "Exotic & Gourmet Pedas",
       "description": "Delicious exotic & gourmet pedas - Silver Leaf Kesar Peda.",
       "price": 260,
-      "image": "/images/exotic_&_gourmet_pedas/silver_leaf_kesar_peda.jpeg",
+      "image": "http://localhost:5000/images/exotic_and_gourmet_pedas/silver_leaf_kesar_peda.jpeg",
       "availability": true
     },
     {
@@ -43,7 +43,7 @@
       "category": "Exotic & Gourmet Pedas",
       "description": "Delicious exotic & gourmet pedas - Chocolate Hazelnut Peda.",
       "price": 280,
-      "image": "/images/exotic_&_gourmet_pedas/chocolate_hazelnut_peda.jpeg",
+      "image": "http://localhost:5000/images/exotic_and_gourmet_pedas/chocolate_hazelnut_peda.jpeg",
       "availability": true
     },
     {
@@ -52,7 +52,7 @@
       "category": "Exotic & Gourmet Pedas",
       "description": "Delicious exotic & gourmet pedas - Coffee Walnut Peda.",
       "price": 300,
-      "image": "/images/exotic_&_gourmet_pedas/coffee_walnut_peda.jpeg",
+      "image": "http://localhost:5000/images/exotic_and_gourmet_pedas/coffee_walnut_peda.jpeg",
       "availability": true
     },
     {
@@ -61,7 +61,7 @@
       "category": "Exotic & Gourmet Pedas",
       "description": "Delicious exotic & gourmet pedas - Blueberry Cheesecake Peda.",
       "price": 320,
-      "image": "/images/exotic_&_gourmet_pedas/blueberry_cheesecake_peda.jpeg",
+      "image": "http://localhost:5000/images/exotic_and_gourmet_pedas/blueberry_cheesecake_peda.jpeg",
       "availability": true
     },
     {
@@ -70,7 +70,7 @@
       "category": "Exotic & Gourmet Pedas",
       "description": "Delicious exotic & gourmet pedas - Almond Saffron Delight.",
       "price": 340,
-      "image": "/images/exotic_&_gourmet_pedas/almond_saffron_delight.jpeg",
+      "image": "http://localhost:5000/images/exotic_and_gourmet_pedas/almond_saffron_delight.jpeg",
       "availability": true
     },
     {
@@ -79,7 +79,7 @@
       "category": "Exotic & Gourmet Pedas",
       "description": "Delicious exotic & gourmet pedas - Gourmet Cashew Peda.",
       "price": 360,
-      "image": "/images/exotic_&_gourmet_pedas/gourmet_cashew_peda.jpeg",
+      "image": "http://localhost:5000/images/exotic_and_gourmet_pedas/gourmet_cashew_peda.jpeg",
       "availability": true
     },
     {
@@ -88,7 +88,7 @@
       "category": "Exotic & Gourmet Pedas",
       "description": "Delicious exotic & gourmet pedas - Luxury Rose Almond Peda.",
       "price": 380,
-      "image": "/images/exotic_&_gourmet_pedas/luxury_rose_almond_peda.jpeg",
+      "image": "http://localhost:5000/images/exotic_and_gourmet_pedas/luxury_rose_almond_peda.jpeg",
       "availability": true
     },
     {
@@ -97,7 +97,7 @@
       "category": "Exotic & Gourmet Pedas",
       "description": "Delicious exotic & gourmet pedas - Exotic Berry Peda.",
       "price": 200,
-      "image": "/images/exotic_&_gourmet_pedas/exotic_berry_peda.jpeg",
+      "image": "http://localhost:5000/images/exotic_and_gourmet_pedas/exotic_berry_peda.jpeg",
       "availability": true
     },
     {
@@ -106,7 +106,7 @@
       "category": "Exotic & Gourmet Pedas",
       "description": "Delicious exotic & gourmet pedas - Caramel Crunch Peda.",
       "price": 220,
-      "image": "/images/exotic_&_gourmet_pedas/caramel_crunch_peda.jpeg",
+      "image": "http://localhost:5000/images/exotic_and_gourmet_pedas/caramel_crunch_peda.jpeg",
       "availability": true
     },
     {
@@ -115,7 +115,7 @@
       "category": "Exotic & Gourmet Pedas",
       "description": "Delicious exotic & gourmet pedas - Butterscotch Almond Peda.",
       "price": 240,
-      "image": "/images/exotic_&_gourmet_pedas/butterscotch_almond_peda.jpeg",
+      "image": "http://localhost:5000/images/exotic_and_gourmet_pedas/butterscotch_almond_peda.jpeg",
       "availability": true
     },
     {
@@ -124,7 +124,7 @@
       "category": "Exotic & Gourmet Pedas",
       "description": "Delicious exotic & gourmet pedas - Tropical Fruit Peda.",
       "price": 260,
-      "image": "/images/exotic_&_gourmet_pedas/tropical_fruit_peda.jpeg",
+      "image": "http://localhost:5000/images/exotic_and_gourmet_pedas/tropical_fruit_peda.jpeg",
       "availability": true
     },
     {
@@ -133,7 +133,7 @@
       "category": "Exotic & Gourmet Pedas",
       "description": "Delicious exotic & gourmet pedas - Honey Nut Supreme Peda.",
       "price": 280,
-      "image": "/images/exotic_&_gourmet_pedas/honey_nut_supreme_peda.jpeg",
+      "image": "http://localhost:5000/images/exotic_and_gourmet_pedas/honey_nut_supreme_peda.jpeg",
       "availability": true
     },
     {
@@ -142,7 +142,7 @@
       "category": "Exotic & Gourmet Pedas",
       "description": "Delicious exotic & gourmet pedas - Premium Dry Fruit Peda.",
       "price": 300,
-      "image": "/images/exotic_&_gourmet_pedas/premium_dry_fruit_peda.jpeg",
+      "image": "http://localhost:5000/images/exotic_and_gourmet_pedas/premium_dry_fruit_peda.jpeg",
       "availability": true
     },
     {
@@ -151,7 +151,7 @@
       "category": "Exotic & Gourmet Pedas",
       "description": "Delicious exotic & gourmet pedas - Golden Delight Peda.",
       "price": 320,
-      "image": "/images/exotic_&_gourmet_pedas/golden_delight_peda.jpeg",
+      "image": "http://localhost:5000/images/exotic_and_gourmet_pedas/golden_delight_peda.jpeg",
       "availability": true
     },
     {
@@ -160,7 +160,7 @@
       "category": "Exotic & Gourmet Pedas",
       "description": "Delicious exotic & gourmet pedas - Choco Mint Peda.",
       "price": 340,
-      "image": "/images/exotic_&_gourmet_pedas/choco_mint_peda.jpeg",
+      "image": "http://localhost:5000/images/exotic_and_gourmet_pedas/choco_mint_peda.jpeg",
       "availability": true
     },
     {
@@ -169,7 +169,7 @@
       "category": "Exotic & Gourmet Pedas",
       "description": "Delicious exotic & gourmet pedas - Luxury Fusion Peda.",
       "price": 360,
-      "image": "/images/exotic_&_gourmet_pedas/luxury_fusion_peda.jpeg",
+      "image": "http://localhost:5000/images/exotic_and_gourmet_pedas/luxury_fusion_peda.jpeg",
       "availability": true
     },
     {
@@ -178,7 +178,7 @@
       "category": "Exotic & Gourmet Pedas",
       "description": "Delicious exotic & gourmet pedas - Kesar Royal Peda.",
       "price": 380,
-      "image": "/images/exotic_&_gourmet_pedas/kesar_royal_peda.jpeg",
+      "image": "http://localhost:5000/images/exotic_and_gourmet_pedas/kesar_royal_peda.jpeg",
       "availability": true
     },
     {
@@ -187,7 +187,7 @@
       "category": "Exotic & Gourmet Pedas",
       "description": "Delicious exotic & gourmet pedas - Exotic Mix Peda.",
       "price": 200,
-      "image": "/images/exotic_&_gourmet_pedas/exotic_mix_peda.jpeg",
+      "image": "http://localhost:5000/images/exotic_and_gourmet_pedas/exotic_mix_peda.jpeg",
       "availability": true
     }
   ]

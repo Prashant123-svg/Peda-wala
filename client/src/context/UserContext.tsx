@@ -1,0 +1,108 @@
+import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
+import axios from "axios";
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: "user" | "admin" | "deliveryBoy";
+}
+
+interface UserContextType {
+  user: User | null;
+  isAuthenticated: boolean;
+  isAdmin: boolean;
+  logout: () => void;
+  refreshUser: () => Promise<void>;
+}
+
+const UserContext = createContext<UserContextType | undefined>(undefined);
+
+export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [user, setUser] = useState<User | null>(null);
+
+  // Load user from localStorage on mount
+  const loadUserFromStorage = useCallback(() => {
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
+    const userName = localStorage.getItem("userName");
+    const userEmail = localStorage.getItem("userEmail");
+    const userRole = localStorage.getItem("userRole") as "user" | "admin" | "deliveryBoy" | null;
+
+    console.log(`📦 UserContext Loading - Role: ${userRole}, Token: ${!!token}`);
+
+    if (token && userId && userName && userRole) {
+      setUser({
+        id: userId,
+        name: userName,
+        email: userEmail || "",
+        role: userRole,
+      });
+    } else if (!token) {
+      setUser(null);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadUserFromStorage();
+    
+    // Listen for storage changes (in case user logs in from another tab)
+    window.addEventListener("storage", loadUserFromStorage);
+    return () => window.removeEventListener("storage", loadUserFromStorage);
+  }, [loadUserFromStorage]);
+
+  const logout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("userName");
+    localStorage.removeItem("userEmail");
+    localStorage.removeItem("userRole");
+    setUser(null);
+  };
+
+  const refreshUser = useCallback(async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      const res = await axios.get("http://localhost:5000/api/auth/profile", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const userData = res.data;
+      setUser({
+        id: userData._id,
+        name: userData.name,
+        email: userData.email,
+        role: userData.role || "user",
+      });
+
+      // Update localStorage
+      localStorage.setItem("userRole", userData.role || "user");
+    } catch (error) {
+      console.error("Error refreshing user:", error);
+    }
+  }, []);
+
+  return (
+    <UserContext.Provider
+      value={{
+        user,
+        isAuthenticated: !!user,
+        isAdmin: user?.role === "admin",
+        logout,
+        refreshUser,
+      }}
+    >
+      {children}
+    </UserContext.Provider>
+  );
+};
+
+export const useUserContext = () => {
+  const context = useContext(UserContext);
+  if (!context) {
+    throw new Error("useUserContext must be used within UserProvider");
+  }
+  return context;
+};

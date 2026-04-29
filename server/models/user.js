@@ -21,7 +21,38 @@ const userSchema = new mongoose.Schema(
     phone: { type: String },     // optional initially
     address: { type: String },    // optional initially
     avatar: { type: String },     // optional initially
-    isPhoneVerified: { type: Boolean, default: false }
+    isPhoneVerified: { type: Boolean, default: false },
+    role: {
+      type: String,
+      enum: ["user", "deliveryBoy", "subAdmin", "admin"],
+      default: "user"
+    },
+    // Admin-specific fields
+    shopName: { type: String },
+    shopDescription: { type: String },
+    businessType: { type: String },
+    status: { 
+      type: String, 
+      enum: ["active", "inactive"],
+      default: "active"
+    },
+    // Subdomain for subAdmin
+    subdomain: { type: String, unique: true, sparse: true }, // unique but optional (null for non-subAdmin)
+    // Role request system
+    requestedRole: { 
+      type: String, 
+      enum: ["deliveryBoy", "subAdmin", null],
+      default: null 
+    },
+    requestStatus: {
+      type: String,
+      enum: ["pending", "approved", "rejected", null],
+      default: null
+    },
+    requestedAt: { type: Date },
+    approvedAt: { type: Date },
+    approvedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    rejectionReason: { type: String }
   },
   { timestamps: true } // automatically createdAt & updatedAt save karega
 );

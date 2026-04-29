@@ -1,0 +1,348 @@
+/* Order Management Styles */
+
+.order-management {
+  padding: 20px;
+  background: #f8f9fa;
+  min-height: 100vh;
+}
+
+.order-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.order-header h2 {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.order-header p {
+  font-size: 16px;
+  margin: 0;
+}
+
+/* Analytics Cards */
+.analytics-card {
+  border-radius: 12px;
+  padding: 25px;
+  text-align: center;
+  color: white;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.analytics-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.analytics-card .number {
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.analytics-card .label {
+  font-size: 14px;
+  opacity: 0.9;
+  font-weight: 500;
+}
+
+.bg-warning {
+  background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%) !important;
+}
+
+.bg-info {
+  background: linear-gradient(135deg, #17a2b8 0%, #0c7cae 100%) !important;
+}
+
+.bg-primary {
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%) !important;
+}
+
+.bg-success {
+  background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%) !important;
+}
+
+.bg-danger {
+  background: linear-gradient(135deg, #dc3545 0%, #c82333 100%) !important;
+}
+
+/* Orders Container */
+.orders-container {
+  max-width: 100%;
+}
+
+.order-card {
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.order-card:hover {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  border-color: #667eea;
+}
+
+.order-header-row {
+  background: #f8f9fa;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  user-select: none;
+}
+
+.order-header-row:hover {
+  background: #e9ecef;
+}
+
+.order-header-row strong {
+  color: #333;
+  font-size: 15px;
+}
+
+.order-header-row .text-muted {
+  font-size: 13px;
+}
+
+/* Order Details */
+.order-details {
+  background: white;
+}
+
+.order-details h6 {
+  color: #333;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.order-details .bg-light {
+  background-color: #f8f9fa !important;
+  border: 1px solid #e9ecef;
+}
+
+.order-details small {
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+/* Status Timeline */
+.status-timeline {
+  border-left: 3px solid #667eea;
+  padding-left: 15px;
+}
+
+.timeline-item {
+  position: relative;
+  padding: 10px 0;
+}
+
+.timeline-item::before {
+  content: "";
+  position: absolute;
+  left: -20px;
+  top: 15px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #667eea;
+  border: 3px solid white;
+  box-shadow: 0 0 0 3px #667eea;
+}
+
+.timeline-item strong {
+  color: #333;
+  display: block;
+  margin-bottom: 5px;
+}
+
+/* Status Badges */
+.badge {
+  padding: 8px 12px !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  border-radius: 20px !important;
+}
+
+.badge.bg-warning {
+  background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%) !important;
+  color: white !important;
+}
+
+.badge.bg-info {
+  background: linear-gradient(135deg, #17a2b8 0%, #0c7cae 100%) !important;
+  color: white !important;
+}
+
+.badge.bg-primary {
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%) !important;
+  color: white !important;
+}
+
+.badge.bg-success {
+  background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%) !important;
+  color: white !important;
+}
+
+.badge.bg-danger {
+  background: linear-gradient(135deg, #dc3545 0%, #c82333 100%) !important;
+  color: white !important;
+}
+
+/* Filter Buttons */
+.btn-group .btn {
+  border: 2px solid currentColor;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-group .btn.active {
+  background-color: currentColor;
+  color: white;
+}
+
+.btn-group .btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Tables */
+.order-details .table {
+  margin-bottom: 0;
+}
+
+.order-details .table-light {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+}
+
+.order-details .table tbody tr:hover {
+  background: #f0f0f0;
+}
+
+.order-details .table th {
+  font-weight: 600;
+  color: #333;
+  border-bottom: 2px solid #667eea;
+}
+
+/* Action Buttons */
+.order-details .btn-sm {
+  padding: 10px 15px;
+  font-weight: 600;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.order-details .btn-sm:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.order-details .btn-info {
+  background: linear-gradient(135deg, #17a2b8 0%, #0c7cae 100%);
+  border: none;
+  color: white;
+}
+
+.order-details .btn-primary {
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  border: none;
+  color: white;
+}
+
+.order-details .btn-success {
+  background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+  border: none;
+  color: white;
+}
+
+.order-details .btn-danger {
+  background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+  border: none;
+  color: white;
+}
+
+/* Forms */
+.order-details .form-label {
+  font-size: 13px;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.order-details .form-select,
+.order-details .form-control {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+.order-details .form-select:focus,
+.order-details .form-control:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .order-header {
+    padding: 20px;
+  }
+
+  .order-header h2 {
+    font-size: 24px;
+  }
+
+  .analytics-card .number {
+    font-size: 28px;
+  }
+
+  .order-header-row {
+    padding: 15px;
+  }
+
+  .order-details {
+    padding: 15px;
+  }
+
+  .d-grid.gap-2 {
+    gap: 10px !important;
+  }
+}
+
+/* Alerts */
+.alert {
+  border: none;
+  border-radius: 8px;
+  border-left: 4px solid;
+}
+
+.alert-success {
+  border-left-color: #28a745;
+  background: #d4edda;
+  color: #155724;
+}
+
+.alert-danger {
+  border-left-color: #dc3545;
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.alert-info {
+  border-left-color: #17a2b8;
+  background: #d1ecf1;
+  color: #0c5460;
+}
+
+/* Spinner */
+.spinner-border {
+  width: 40px;
+  height: 40px;
+}
