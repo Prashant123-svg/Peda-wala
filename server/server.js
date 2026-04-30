@@ -68,6 +68,44 @@ app.get("/api/debug/routes", (req, res) => {
 });
 
 // ✅ Static files serve
+// Case-insensitive image lookup middleware for deployments on case-sensitive filesystems
+app.use('/images', async (req, res, next) => {
+  try {
+    const reqPath = decodeURIComponent(req.path || '');
+    // Prevent path traversal
+    if (reqPath.includes('..')) return res.status(400).end();
+
+    const imagesRoot = path.join(__dirname, 'public', 'images');
+    const targetPath = path.join(imagesRoot, reqPath);
+
+    if (fs.existsSync(targetPath) && fs.statSync(targetPath).isFile()) {
+      return res.sendFile(targetPath);
+    }
+
+    // Walk imagesRoot and attempt case-insensitive match
+    const parts = reqPath.split('/').filter(Boolean);
+    let cur = imagesRoot;
+    let found = true;
+
+    for (const part of parts) {
+      const entries = fs.readdirSync(cur);
+      const match = entries.find(e => e.toLowerCase() === part.toLowerCase());
+      if (!match) { found = false; break; }
+      cur = path.join(cur, match);
+    }
+
+    if (found && fs.existsSync(cur) && fs.statSync(cur).isFile()) {
+      return res.sendFile(cur);
+    }
+
+    // fallback to original static handler
+    next();
+  } catch (err) {
+    console.error('Error in images middleware:', err);
+    next();
+  }
+});
+
 app.use("/images", express.static(path.join(__dirname, "public", "images")));
 app.use("/profile-documents", express.static(path.join(__dirname, "public", "profile-documents")));
 app.use("/data", express.static(path.join(__dirname, "data", "pedhe_json")));
