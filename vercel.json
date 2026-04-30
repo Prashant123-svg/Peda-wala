@@ -4,27 +4,16 @@
     {
       "src": "server/server.js",
       "use": "@vercel/node",
-      "config": {
-        "includeFiles": "server/**"
-      }
+      "config": { "includeFiles": "server/**" }
     },
     {
       "src": "client/package.json",
       "use": "@vercel/static-build",
-      "config": {
-        "distDir": "client/dist"
-      }
+      "config": { "distDir": "client/dist" }
     }
   ],
   "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "server/server.js"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "client/dist/index.html",
-      "status": 200
-    }
+    { "src": "/api/(.*)", "dest": "server/server.js" },
+    { "src": "/(.*)", "dest": "client/dist/index.html", "status": 200 }
   ]
 }
