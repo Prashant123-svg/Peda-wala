@@ -292,6 +292,13 @@ app.post("/api/dialogflow", (req, res) => {
   });
 });
 
+app.get("/", (req, res) => {
+  res.json({
+    message: "🚀 Pedhe Wala API is running successfully",
+    status: "OK"
+  });
+});
+
 // ✅ 404 Handler (Debug)
 app.use((req, res) => {
   console.log(`❌ 404 - ${req.method} ${req.path}`);
