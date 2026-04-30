@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { API_BASE_URL } from "../utils/apiConfig";
 
 interface OrderItem {
   productName: string;
@@ -25,6 +26,16 @@ interface OrderData {
   createdAt: string;
   updatedAt?: string;
 }
+
+const API_ORIGIN = API_BASE_URL.replace(/\/api\/?$/, "");
+
+const resolveImageUrl = (image?: string) => {
+  if (!image) return "";
+  if (image.startsWith("http://localhost:5000/api")) return image.replace("http://localhost:5000/api", API_BASE_URL);
+  if (image.startsWith("http://localhost:5000")) return image.replace("http://localhost:5000", API_ORIGIN);
+  if (image.startsWith("/")) return `${API_ORIGIN}${image}`;
+  return image;
+};
 
 const AdminOrderDetails: React.FC = () => {
   const { orderId } = useParams<{ orderId: string }>();
@@ -298,7 +309,7 @@ const AdminOrderDetails: React.FC = () => {
                   <div key={index} className="flex gap-4 p-4 border-b border-gray-200 last:border-b-0">
                     {item.image && (
                       <div className="flex-shrink-0">
-                        <img src={item.image} alt={item.productName} className="w-20 h-20 object-cover rounded" />
+                        <img src={resolveImageUrl(item.image)} alt={item.productName} className="w-20 h-20 object-cover rounded" />
                       </div>
                     )}
                     <div className="flex-grow">

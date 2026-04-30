@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useCart } from "../context/CartContext";
 import { useUserContext } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "../utils/apiConfig";
 
 const INDIAN_STATES = [
   "Select a state",
@@ -66,6 +67,16 @@ const STATE_CITY_MAP: {[key: string]: string[]} = {
   "West Bengal": ["Kolkata", "Howrah", "Darjeeling", "Siliguri"],
 };
 
+const API_ORIGIN = API_BASE_URL.replace(/\/api\/?$/, "");
+
+const resolveImageUrl = (image?: string) => {
+  if (!image) return "";
+  if (image.startsWith("http://localhost:5000/api")) return image.replace("http://localhost:5000/api", API_BASE_URL);
+  if (image.startsWith("http://localhost:5000")) return image.replace("http://localhost:5000", API_ORIGIN);
+  if (image.startsWith("/")) return `${API_ORIGIN}${image}`;
+  return image;
+};
+
 interface Order {
   _id: string;
   items: any[];
@@ -127,11 +138,9 @@ const Orders: React.FC = () => {
 
       // Use different endpoint for admin vs regular users
       // Default to user orders if isAdmin is undefined
-      const endpoint = isAdmin ? "/api/orders/admin/all-orders" : "/api/orders/my-orders";
+      const endpoint = isAdmin ? "/orders/admin/all-orders" : "/orders/my-orders";
       console.log(`📋 Fetching orders - User Role: ${userRole}, isAdmin: ${isAdmin}, Endpoint: ${endpoint}`);
-      const apiUrl = import.meta.env.DEV 
-        ? `http://localhost:5000${endpoint}`
-        : endpoint;
+      const apiUrl = `${API_BASE_URL}${endpoint}`;
 
       const response = await fetch(apiUrl, {
         method: "GET",
@@ -214,9 +223,7 @@ const Orders: React.FC = () => {
         return;
       }
 
-      const apiUrl = import.meta.env.DEV 
-        ? "http://localhost:5000/api/orders/create-order"
-        : "/api/orders/create-order";
+      const apiUrl = `${API_BASE_URL}/orders/create-order`;
 
       const response = await fetch(apiUrl, {
         method: "POST",
@@ -280,9 +287,7 @@ const Orders: React.FC = () => {
         return;
       }
 
-      const apiUrl = import.meta.env.DEV 
-        ? `http://localhost:5000/api/orders/admin/order-status/${orderId}`
-        : `/api/orders/admin/order-status/${orderId}`;
+      const apiUrl = `${API_BASE_URL}/orders/admin/order-status/${orderId}`;
 
       const response = await fetch(apiUrl, {
         method: "PUT",
@@ -559,7 +564,7 @@ const Orders: React.FC = () => {
                     {/* Image */}
                     <div className="relative overflow-hidden bg-gray-100 h-48">
                       <img
-                        src={item.image}
+                        src={resolveImageUrl(item.image)}
                         alt={item.name}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                       />
