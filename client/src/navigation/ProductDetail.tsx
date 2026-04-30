@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
+import { API_BASE_URL } from "../utils/apiConfig";
 
 interface Weight {
   label: string;
@@ -21,6 +22,7 @@ interface Product {
 }
 
 const fallbackImg = "/images/placeholder.jpg";
+const API_ORIGIN = API_BASE_URL.replace(/\/api\/?$/, "");
 
 // Mapping of product slugs to their IDs for best sellers
 const productSlugToId: Record<string, number> = {
@@ -48,7 +50,7 @@ const ProductDetail: React.FC = () => {
   const getImageUrl = (image: string | undefined): string => {
     if (!image) return fallbackImg;
     if (image.startsWith("http")) return image;
-    return `http://localhost:5000${image}`;
+    return `${API_ORIGIN}${image}`;
   };
 
   // Scroll to top when product detail page loads
@@ -75,7 +77,7 @@ const ProductDetail: React.FC = () => {
       }
     }
     
-    fetch(`http://localhost:5000/api/categories/product/${productId}`)
+    fetch(`${API_BASE_URL}/categories/product/${productId}`)
       .then((res) => {
         if (!res.ok) throw new Error("Product not found");
         return res.json();

@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
+import { API_BASE_URL } from "../utils/apiConfig";
+
+const API_ORIGIN = API_BASE_URL.replace(/\/api\/?$/, "");
 
 interface Product {
   id: number;
@@ -26,14 +29,14 @@ const Products = () => {
   ];
 
   useEffect(() => {
-    fetch("http://localhost:5000/products/products.json")
+    fetch(`${API_ORIGIN}/products/products.json`)
       .then((res) => res.json())
       .then((data) => {
         const normalizedData = data.map((product: Product) => ({
           ...product,
           image: product.image.startsWith("http")
             ? product.image
-            : `http://localhost:5000${product.image}`,
+            : `${API_ORIGIN}${product.image}`,
         }));
         setProducts(normalizedData);
       })

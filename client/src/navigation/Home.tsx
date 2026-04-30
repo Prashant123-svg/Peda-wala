@@ -4,8 +4,9 @@ import hero1 from "../assets/hero1.jpg";
 import hero2 from "../assets/hero2.jpg";
 import { BiSolidOffer } from "react-icons/bi";
 import { useCart } from "../context/CartContext";
+import { API_BASE_URL } from "../utils/apiConfig";
 
-const IMAGE_BASE_URL = "http://localhost:5000";
+const IMAGE_BASE_URL = API_BASE_URL.replace(/\/api\/?$/, "");
 const fallbackImg = `${IMAGE_BASE_URL}/images/products/pedhe.jpeg`;
 
 const getImageUrl = (image: string) => {
@@ -45,25 +46,25 @@ export default function Home() {
       id: 1,
       name: "Mix Peda Box",
       categoryName: "Classic Pedas",
-      image: "http://localhost:5000/images/products/pedhe.jpeg",
+      image: "/images/products/pedhe.jpeg",
     },
     {
       id: 2,
       name: "Special Namkeen Mixtures",
       categoryName: "Nutty & Dry Fruit Pedas",
-      image: "http://localhost:5000/images/products/dry_fruit_sweet.jpeg",
+      image: "/images/products/dry_fruit_sweet.jpeg",
     },
     {
       id: 3,
       name: "Festive Gift Pack",
       categoryName: "Seasonal Pedas",
-      image: "http://localhost:5000/images/products/festive_special.jpeg",
+      image: "/images/products/festive_special.jpeg",
     },
     {
       id: 4,
       name: "Family Combo Pack",
       categoryName: "Modern Fusion Pedas",
-      image: "http://localhost:5000/images/products/gift_pack.jpeg",
+      image: "/images/products/gift_pack.jpeg",
     },
   ];
 
@@ -74,21 +75,21 @@ export default function Home() {
       name: "Mathura ke Pedhe",
       price: "₹412",
       link: "/product/mathura-ke-pedhe",
-      image: "http://localhost:5000/images/best_seller/mathura_ke_pedhe.jpeg",
+      image: "/images/best_seller/mathura_ke_pedhe.jpeg",
     },
     {
       id: 2,
       name: "Kesar Pedhe",
       price: "₹450",
       link: "/product/kesar-pedhe",
-      image: "http://localhost:5000/images/best_seller/kesar_peda.jpeg",
+      image: "/images/best_seller/kesar_peda.jpeg",
     },
     {
       id: 3,
       name: "Mawa Pedhe",
       price: "₹430",
       link: "/product/mawa-pedhe",
-      image: "http://localhost:5000/images/best_seller/mawa.jpeg",
+      image: "/images/best_seller/mawa.jpeg",
     },
   ];
 
