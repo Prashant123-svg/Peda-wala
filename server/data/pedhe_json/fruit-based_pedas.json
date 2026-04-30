@@ -6,7 +6,7 @@
       "category": "Fruit-Based Pedas",
       "description": "Delicious fruit-based pedas - Mango Peda.",
       "price": 220,
-      "image": "/images/fruit-based_pedas/mango_peda.jpeg",
+        "image": "/images/fruit-based_pedas/grapes_peda.jpeg",
       "availability": true
     },
     {
@@ -15,7 +15,7 @@
       "category": "Fruit-Based Pedas",
       "description": "Delicious fruit-based pedas - Strawberry Peda.",
       "price": 240,
-      "image": "/images/fruit-based_pedas/strawberry_peda.jpeg",
+        "image": "/images/fruit-based_pedas/guava_peda.jpeg",
       "availability": true
     },
     {

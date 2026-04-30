@@ -5,7 +5,7 @@
     "price": 200,
     "category": "Mix Peda Boxes",
     "description": "Soft and delicious peda made with khoya and sugar.",
-    "image": "http://localhost:5000/images/products/Mix_Pedha_Box1.jpg"
+    "image": "/images/products/MIx_Pedha_Box1.jpg"
   },
   {
     "id": 2,
@@ -13,7 +13,7 @@
     "price": 200,
     "category": "Mix Peda Boxes",
     "description": "Soft and delicious peda made with khoya and sugar.",
-    "image": "http://localhost:5000/images/products/Mix_Pedha_Box2.jpg"
+    "image": "/images/products/Mix_Pedha_Box2.jpg"
   },
   {
     "id": 3,
@@ -21,7 +21,7 @@
     "price": 200,
     "category": "Mix Peda Boxes",
     "description": "Soft and delicious peda made with khoya and sugar.",
-    "image": "http://localhost:5000/images/products/Mix_Pedha_Box3.jpg"
+    "image": "/images/products/Mix_Pedha_Box3.jpg"
   },
 
   {
@@ -30,7 +30,7 @@
     "price": 150,
     "category": "Special Namkeen Mixtures",
     "description": "Crispy and spicy namkeen mixture for your tea-time.",
-    "image": "http://localhost:5000/images/products/Special_Namkeen_Mixture1.jpg"
+    "image": "/images/products/Special_Namkeen_Mixture1.jpg"
   },
   {
     "id": 5,
@@ -38,7 +38,7 @@
     "price": 150,
     "category": "Special Namkeen Mixtures",
     "description": "Crispy and spicy namkeen mixture for your tea-time.",
-    "image": "http://localhost:5000/images/products/Special_Namkeen_Mixture2.jpg"
+    "image": "/images/products/Special_Namkeen_Mixture2.jpg"
   },
   {
     "id": 6,
@@ -46,7 +46,7 @@
     "price": 150,
     "category": "Special Namkeen Mixtures",
     "description": "Crispy and spicy namkeen mixture for your tea-time.",
-    "image": "http://localhost:5000/images/products/Special_Namkeen_Mixture3.jpg"
+    "image": "/images/products/Special_Namkeen_Mixture3.jpg"
   },
 
   {
@@ -55,7 +55,7 @@
     "price": 800,
     "category": "Festive Gift Packs",
     "description": "Beautifully packed assorted sweets for gifting.",
-    "image": "http://localhost:5000/images/products/Festive_Gift_Pack1.jpg"
+    "image": "/images/products/Festive_Gift_Pack1.jpg"
   },
     {
     "id": 8,
@@ -63,7 +63,7 @@
     "price": 800,
     "category": "Festive Gift Packs",
     "description": "Beautifully packed assorted sweets for gifting.",
-    "image": "http://localhost:5000/images/products/Festive_Gift_Pack2.jpg"
+    "image": "/images/products/Festive_Gift_Pack2.jpg"
   },
     {
     "id": 9,
@@ -71,7 +71,7 @@
     "price": 800,
     "category": "Festive Gift Packs",
     "description": "Beautifully packed assorted sweets for gifting.",
-    "image": "http://localhost:5000/images/products/Festive_Gift_Pack3.jpg"
+    "image": "/images/products/Festive_Gift_Pack3.jpg"
   },
 
   {
@@ -80,7 +80,7 @@
     "price": 1200,
     "category": "Family Combo Packs",
     "description": "Combo of sweets, dry fruits and namkeen for families.",
-    "image": "http://localhost:5000/images/products/Family_Combo_Pack1.jpg"
+    "image": "/images/products/Family_Combo_Pack1.jpg"
   },
   {
     "id": 11,
@@ -88,7 +88,7 @@
     "price": 1200,
     "category": "Family Combo Packs",
     "description": "Combo of sweets, dry fruits and namkeen for families.",
-    "image": "http://localhost:5000/images/products/Family_Combo_Pack2.jpg"
+    "image": "/images/products/Family_Combo_Pack2.jpg"
   },
   {
     "id": 12,
@@ -96,7 +96,7 @@
     "price": 1200,
     "category": "Family Combo Packs",
     "description": "Combo of sweets, dry fruits and namkeen for families.",
-    "image": "http://localhost:5000/images/products/Family_Combo_Pack3.jpg"
+    "image": "/images/products/Family_Combo_Pack3.jpg"
   }
 
 ]

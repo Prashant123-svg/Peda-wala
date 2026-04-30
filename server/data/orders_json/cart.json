@@ -5,21 +5,21 @@
       "name": "Kesar Peda",
       "price": 220,
       "qty": 2,
-      "image": "/Pedhe-Wale/images/classic_pedas/kesar_peda.jpeg"
+      "image": "/images/classic_pedas/kesar_peda.jpeg"
     },
     {
       "id": 2,
       "name": "Rose Peda",
       "price": 340,
       "qty": 1,
-      "image": "/Pedhe-Wale/images/classic_pedas/rose_peda.jpeg"
+      "image": "/images/classic_pedas/rose_peda.jpg"
     },
     {
       "id": 3,
       "name": "Paan Peda",
       "price": 340,
       "qty": 1,
-      "image": "/Pedhe-Wale/images/classic_pedas/paan_peda.jpeg"
+      "image": "/images/classic_pedas/pedhe.jpeg"
     }
   ]
 }

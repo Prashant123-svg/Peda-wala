@@ -10,7 +10,7 @@
           "name": "Mawa Peda",
           "price": 200,
           "qty": 3,
-          "image": "/Pedhe-Wale/images/classic_pedas/mawa_peda.jpeg"
+          "image": "/images/classic_pedas/mawa_peda.jpeg"
         }
       ]
     },
@@ -24,7 +24,7 @@
           "name": "Elaichi Peda",
           "price": 320,
           "qty": 2,
-          "image": "/Pedhe-Wale/images/classic_pedas/elaichi_peda.jpeg"
+          "image": "/images/classic_pedas/elaichi_peda.jpeg"
         }
       ]
     }
