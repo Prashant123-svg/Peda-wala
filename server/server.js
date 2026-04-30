@@ -357,22 +357,49 @@ process.on("unhandledRejection", (reason, promise) => {
   console.error("❌ Unhandled Rejection at:", promise, "reason:", reason);
 });
 
-// ✅ Start Server
-const PORT = process.env.PORT || 5000;
+// ✅ Start Server with EADDRINUSE handling (tries next port)
+const DEFAULT_PORT = parseInt(process.env.PORT, 10) || 5000;
+let server;
 
-const server = app.listen(PORT, () => {
-  console.log(`✅ Server running on port ${PORT}`);
-  console.log(`🌍 Environment: ${process.env.NODE_ENV || "development"}`);
-  console.log(`📊 API Base: http://localhost:${PORT}/api`);
+function startServer(port) {
+  return new Promise((resolve, reject) => {
+    server = app.listen(port, () => {
+      console.log(`✅ Server running on port ${port}`);
+      console.log(`🌍 Environment: ${process.env.NODE_ENV || "development"}`);
+      console.log(`📊 API Base: http://localhost:${port}/api`);
+      resolve(server);
+    });
+
+    server.on('error', (err) => {
+      if (err && err.code === 'EADDRINUSE') {
+        console.error(`❌ Port ${port} in use. Trying port ${port + 1}...`);
+        // close this server and try next port
+        setTimeout(() => {
+          startServer(port + 1).then(resolve).catch(reject);
+        }, 200);
+        return;
+      }
+      reject(err);
+    });
+  });
+}
+
+startServer(DEFAULT_PORT).catch(err => {
+  console.error('❌ Failed to start server:', err);
+  process.exit(1);
 });
 
 // ✅ Graceful Shutdown
 process.on("SIGTERM", () => {
   console.log("⚠️ SIGTERM received. Shutting down gracefully...");
-  server.close(() => {
-    console.log("✅ Server closed");
+  if (server) {
+    server.close(() => {
+      console.log("✅ Server closed");
+      process.exit(0);
+    });
+  } else {
     process.exit(0);
-  });
+  }
 });
 
 export default app;
