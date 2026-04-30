@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../styles/AddPedas.css";
+import { API_BASE_URL } from "../utils/apiConfig";
+import { FALLBACK_IMAGE_URL, resolveImageUrl } from "../utils/imageUrl";
 
 interface PedaFormData {
   name: string;
@@ -54,7 +56,7 @@ const AddPedas = () => {
           return;
         }
 
-        const profileRes = await axios.get("http://localhost:5000/api/auth/profile", {
+        const profileRes = await axios.get(`${API_BASE_URL}/auth/profile`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -101,7 +103,7 @@ const AddPedas = () => {
       }
 
       const response = await axios.post(
-        "http://localhost:5000/api/categories/add-peda",
+        `${API_BASE_URL}/categories/add-peda`,
         {
           ...formData,
           category: categories.find((c) => c.name === formData.category)?.label || formData.category,
@@ -280,7 +282,7 @@ const AddPedas = () => {
               {formData.image && (
                 <div className="mt-3 rounded overflow-hidden border border-gray-200">
                   <img 
-                    src={`http://localhost:5000${formData.image}`} 
+                    src={resolveImageUrl(formData.image, FALLBACK_IMAGE_URL)} 
                     alt="Preview" 
                     className="w-full h-40 object-cover"
                     onError={() => {}}

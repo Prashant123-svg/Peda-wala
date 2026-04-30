@@ -4,8 +4,8 @@ import { CATEGORY_FILES } from "../constants/categoryFiles";
 import type { Product } from "../types/Product";
 import { useCart } from "../context/CartContext";
 import ProductModal from "../components/ProductModal";
-
-const fallbackImg = "/images/placeholder.jpg";
+import { FALLBACK_IMAGE_URL, resolveImageUrl } from "../utils/imageUrl";
+import { API_BASE_URL } from "../utils/apiConfig";
 
 // Utility function to convert product name to URL slug
 const productNameToSlug = (name: string): string => {
@@ -88,7 +88,7 @@ const CategoryDetail: React.FC = () => {
 
     console.log(`🔄 Loading products from: ${file}`);
 
-    fetch(`http://localhost:5000/api/categories/${file}`)
+    fetch(`${API_BASE_URL}/categories/${file}`)
       .then((res) => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return res.json();
@@ -142,9 +142,7 @@ const CategoryDetail: React.FC = () => {
   const { addToCart } = useCart();
 
   const getImageUrl = (image: string | undefined): string => {
-    if (!image) return fallbackImg;
-    if (image.startsWith("http")) return image;
-    return `http://localhost:5000${image}`;
+    return resolveImageUrl(image, FALLBACK_IMAGE_URL);
   };
 
   const handleAddToCart = (p: Product) => {
@@ -238,7 +236,7 @@ const CategoryDetail: React.FC = () => {
                   >
                     <img
                       src={getImageUrl(p.image)}
-                      onError={(e) => (e.currentTarget.src = fallbackImg)}
+                      onError={(e) => (e.currentTarget.src = FALLBACK_IMAGE_URL)}
                       alt={p.name}
                       className="card-img-top"
                       style={{ height: 180, objectFit: "cover" }}

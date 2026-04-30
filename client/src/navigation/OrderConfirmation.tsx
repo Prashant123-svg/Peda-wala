@@ -1,5 +1,6 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { FALLBACK_IMAGE_URL, resolveImageUrl } from "../utils/imageUrl";
 
 interface OrderItem {
   id: number;
@@ -45,12 +46,6 @@ const OrderConfirmation = () => {
 
   const { items, address, paymentMethod, orderId, total } = state;
 
-  const getImageUrl = (image: string | undefined): string => {
-    if (!image) return "/images/placeholder.jpg";
-    if (image.startsWith("http")) return image;
-    return `http://localhost:5000${image}`;
-  };
-
   return (
     <div className="order-confirmation-page page-section">
       <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-blue-50 py-12 page-section">
@@ -90,10 +85,10 @@ const OrderConfirmation = () => {
                 <div key={item.id} className="flex items-center gap-4 p-4 bg-gradient-to-r from-gray-50 to-green-50 rounded-xl hover:shadow-md transition-shadow border border-gray-100 content-wrapper-start">
                   <div className="relative">
                     <img
-                      src={getImageUrl(item.image)}
+                      src={resolveImageUrl(item.image, FALLBACK_IMAGE_URL)}
                       alt={item.name}
                       className="w-24 h-24 object-cover rounded-lg bg-gray-200 shadow-md"
-                      onError={(e) => (e.currentTarget.src = "/images/placeholder.jpg")}
+                      onError={(e) => (e.currentTarget.src = FALLBACK_IMAGE_URL)}
                     />
                     <div className="absolute -top-2 -right-2 bg-green-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold text-sm shadow-lg">
                       {item.qty}

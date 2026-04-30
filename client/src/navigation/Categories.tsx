@@ -5,8 +5,8 @@ import SideBar from "../components/SideBar";
 import { useCart } from "../context/CartContext";
 import ProductModal from "../components/ProductModal";
 import { useNavigate, useLocation } from "react-router-dom";
-
-const fallbackImg = "/images/placeholder.jpg";
+import { FALLBACK_IMAGE_URL, resolveImageUrl } from "../utils/imageUrl";
+import { API_BASE_URL } from "../utils/apiConfig";
 
 const Categories: React.FC = () => {
   const location = useLocation();
@@ -38,7 +38,7 @@ const Categories: React.FC = () => {
     setLoading(true);
     setError("");
 
-    fetch(`http://localhost:5000/api/categories/${file}`)
+    fetch(`${API_BASE_URL}/categories/${file}`)
       .then((res) => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return res.json();
@@ -70,9 +70,7 @@ const Categories: React.FC = () => {
   }, [Categories, search, priceFilter]);
 
   const getImageUrl = (image?: string) => {
-    if (!image) return fallbackImg;
-    if (image.startsWith("http")) return image;
-    return `http://localhost:5000${image}`;
+    return resolveImageUrl(image, FALLBACK_IMAGE_URL);
   };
 
   return (
@@ -139,7 +137,7 @@ const Categories: React.FC = () => {
                   <div className="w-full h-44 overflow-hidden bg-gray-100">
                     <img
                       src={getImageUrl(p.image)}
-                      onError={(e) => (e.currentTarget.src = fallbackImg)}
+                      onError={(e) => (e.currentTarget.src = FALLBACK_IMAGE_URL)}
                       alt={p.name}
                       className="w-full h-full object-cover group-hover:scale-105 transition"
                     />

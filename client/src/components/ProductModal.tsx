@@ -322,6 +322,7 @@
 import React, { useState, useEffect } from "react";
 import { useCart } from "../context/CartContext";
 import { useNotificationContext } from "../context/NotificationContext";
+import { FALLBACK_IMAGE_URL, resolveImageUrl } from "../utils/imageUrl";
 
 interface Weight {
   label: string;
@@ -353,9 +354,7 @@ const ProductModal = ({
   const [selectedWeight, setSelectedWeight] = useState<Weight | null>(null);
 
   const getImageUrl = (image: string | undefined): string => {
-    if (!image) return "/images/placeholder.jpg";
-    if (image.startsWith("http")) return image;
-    return `http://localhost:5000${image}`;
+    return resolveImageUrl(image, FALLBACK_IMAGE_URL);
   };
 
   const [mainImg, setMainImg] = useState(getImageUrl(product.image));

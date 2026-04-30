@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { FALLBACK_IMAGE_URL, resolveImageUrl } from "../utils/imageUrl";
+import { API_BASE_URL } from "../utils/apiConfig";
 
 interface OrderItem {
   id: number;
@@ -44,9 +46,7 @@ const OrderDetails: React.FC = () => {
         return;
       }
 
-      const apiUrl = import.meta.env.DEV
-        ? `http://localhost:5000/api/orders/order/${orderId}`
-        : `/api/orders/order/${orderId}`;
+      const apiUrl = `${API_BASE_URL}/orders/order/${orderId}`;
 
       const response = await fetch(apiUrl, {
         method: "GET",
@@ -128,14 +128,6 @@ const OrderDetails: React.FC = () => {
     );
   }
 
-  const fallbackImg = "/images/placeholder.jpg";
-
-  const getImageUrl = (image: string | undefined): string => {
-    if (!image) return fallbackImg;
-    if (image.startsWith("http")) return image;
-    return `http://localhost:5000${image}`;
-  };
-
   return (
     <div className="order-detail-page page-section">
       <div className="w-full px-4 py-6 section-content">
@@ -215,7 +207,7 @@ const OrderDetails: React.FC = () => {
                 }}
               >
                 <img
-                  src={getImageUrl(item.image)}
+                  src={resolveImageUrl(item.image, FALLBACK_IMAGE_URL)}
                   alt={item.name}
                   style={{
                     width: "100px",
@@ -223,7 +215,7 @@ const OrderDetails: React.FC = () => {
                     objectFit: "cover",
                     borderRadius: "8px",
                   }}
-                  onError={(e) => (e.currentTarget.src = fallbackImg)}
+                  onError={(e) => (e.currentTarget.src = FALLBACK_IMAGE_URL)}
                 />
                 <div style={{ flex: 1 }}>
                   <h6 style={{ color: "#111827", marginBottom: "8px" }}>
