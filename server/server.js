@@ -28,6 +28,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+const clientDistPath = path.resolve(__dirname, "../client/dist");
+const clientIndexPath = path.join(clientDistPath, "index.html");
+
 // ✅ MongoDB connect
 connectDB();
 
@@ -110,6 +113,10 @@ app.use("/images", express.static(path.join(__dirname, "public", "images")));
 app.use("/profile-documents", express.static(path.join(__dirname, "public", "profile-documents")));
 app.use("/data", express.static(path.join(__dirname, "data", "pedhe_json")));
 app.use("/products", express.static(path.join(__dirname, "data", "products_json")));
+
+if (fs.existsSync(clientDistPath)) {
+  app.use(express.static(clientDistPath));
+}
 
 // ✅ JSON file paths
 const ordersPath = path.join(__dirname, "data", "past_orders_json");
@@ -335,6 +342,18 @@ app.get("/", (req, res) => {
     message: "🚀 Pedhe Wala API is running successfully",
     status: "OK"
   });
+});
+
+app.get(/^\/(?!api|images|profile-documents|data|products).*/, (req, res, next) => {
+  if (req.method !== "GET") {
+    return next();
+  }
+
+  if (fs.existsSync(clientIndexPath)) {
+    return res.sendFile(clientIndexPath);
+  }
+
+  return next();
 });
 
 // ✅ 404 Handler (Debug)
