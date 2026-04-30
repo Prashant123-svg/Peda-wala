@@ -2,6 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useNotificationContext } from "../context/NotificationContext";
+import { API_BASE_URL } from "../utils/apiConfig";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -15,7 +16,7 @@ const Login = () => {
     if (submitting) return;
     setSubmitting(true);
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/login", { email, password });
+      const res = await axios.post(`${API_BASE_URL}/auth/login`, { email, password });
       console.log("✅ Login response:", res.data.user);
       
       localStorage.setItem("token", res.data.token); // token save

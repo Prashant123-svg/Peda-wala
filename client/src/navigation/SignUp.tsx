@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "../utils/apiConfig";
 const Signup = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -13,7 +14,7 @@ const handleSubmit = async (e: React.FormEvent) => {
   if (submitting) return;
   setSubmitting(true);
   try {
-    const res = await axios.post("http://localhost:5000/api/auth/signup", { name, email, password });
+    const res = await axios.post(`${API_BASE_URL}/auth/signup`, { name, email, password });
     alert(res.data.message);
      if (res.status === 200) {
         navigate("/login"); // 👈 login success ke baad Home page pe bhej do

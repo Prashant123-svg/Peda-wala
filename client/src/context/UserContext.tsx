@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import axios from "axios";
+import { API_BASE_URL } from "../utils/apiConfig";
 
 export interface User {
   id: string;
@@ -65,7 +66,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const token = localStorage.getItem("token");
       if (!token) return;
 
-      const res = await axios.get("http://localhost:5000/api/auth/profile", {
+      const res = await axios.get(`${API_BASE_URL}/auth/profile`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

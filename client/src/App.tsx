@@ -41,6 +41,7 @@ function AppContent() {
 
   // Check subdomain on mount and route accordingly
   useEffect(() => {
+    // Only apply subdomain routing if actually on a subdomain
     if (subdomain) {
       console.log(`🌐 Subdomain detected: ${subdomain}`);
       
@@ -48,14 +49,16 @@ function AppContent() {
       if (userRole === "subAdmin" && token) {
         console.log("👨‍💼 Routing to Sub-Admin Dashboard");
         navigate("/admin", { replace: true });
-      }
-      // If not logged in, show login
-      else {
+      } else if (userRole === "deliveryBoy" && token) {
+        console.log("🚚 Routing to Delivery Boy Dashboard");
+        navigate("/delivery-boy/dashboard", { replace: true });
+      } else if (!isLoginPage) {
+        // If not logged in and not on login page, show login
         console.log("⚠️ No valid role on subdomain, redirecting to login");
         navigate("/login", { replace: true });
       }
     }
-  }, [subdomain, userRole, token, navigate]);
+  }, [subdomain, userRole, token, navigate, isLoginPage]);
 
   return (
     <div className="app-container w-full min-h-screen flex flex-col">

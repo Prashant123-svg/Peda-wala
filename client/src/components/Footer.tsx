@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { BsInstagram, BsFacebook, BsYoutube, BsWhatsapp } from "react-icons/bs";
+import { API_BASE_URL } from "../utils/apiConfig";
 
 const Footer = () => {
   const [email, setEmail] = useState("");
@@ -13,7 +14,7 @@ const Footer = () => {
     }
 
     try {
-      const res = await fetch("http://localhost:5000/api/subscribe", {
+      const res = await fetch(`${API_BASE_URL}/subscribe`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
