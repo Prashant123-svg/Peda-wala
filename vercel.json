@@ -26,10 +26,5 @@
       "dest": "client/dist/index.html",
       "status": 200
     }
-  ],
-  "env": {
-    "MONGO_URI": "@mongo_uri",
-    "JWT_SECRET": "@jwt_secret",
-    "NODE_ENV": "production"
-  }
+  ]
 }
