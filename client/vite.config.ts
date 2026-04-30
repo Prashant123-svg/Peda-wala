@@ -8,12 +8,12 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "http://localhost:5000",
+        target: "https://pedhe-backend.onrender.com",
         changeOrigin: true,
         secure: false,
       },
       "/images": {
-        target: "http://localhost:5000",
+        target: "https://pedhe-backend.onrender.com",
         changeOrigin: true,
         secure: false,
       },
