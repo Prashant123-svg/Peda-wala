@@ -1,6 +1,7 @@
-import React from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { FALLBACK_IMAGE_URL, resolveImageUrl } from "../utils/imageUrl";
+import { API_BASE_URL } from "../utils/apiConfig";
 
 interface OrderItem {
   id: number;
@@ -27,9 +28,74 @@ interface OrderState {
 const OrderConfirmation = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const state = location.state as OrderState;
+  const [searchParams] = useSearchParams();
+  const [state, setState] = useState<OrderState | null>(location.state as OrderState || null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    // If no state provided, try localStorage then try fetching by orderId query param
+    const init = async () => {
+      if (state && state.items) return;
+
+      // Try localStorage
+      try {
+        const saved = localStorage.getItem("lastOrder");
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          setState(parsed);
+          return;
+        }
+      } catch (e) {
+        // ignore
+      }
+
+      // Try fetching from server if orderId is present
+      const orderId = searchParams.get("orderId");
+      if (orderId) {
+        setLoading(true);
+        try {
+          const token = localStorage.getItem("authToken") || localStorage.getItem("token");
+          const res = await fetch(`${API_BASE_URL}/orders/order/${orderId}`, {
+            headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+          });
+          if (res.ok) {
+            const json = await res.json().catch(() => null);
+            if (json && json.order) {
+              const built: OrderState = {
+                items: json.order.items || [],
+                address: {
+                  name: json.order.userName || "",
+                  phone: json.order.phoneNumber || "",
+                  street: json.order.deliveryAddress || "",
+                  city: "",
+                  pincode: "",
+                },
+                paymentMethod: json.order.paymentMethod || "",
+                orderId: json.order._id,
+                total: json.order.totalPrice || 0,
+              };
+              setState(built);
+            }
+          }
+        } catch (e) {
+          console.error("Failed to fetch order:", e);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+    init();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (!state || !state.items) {
+    if (loading) {
+      return (
+        <div className="p-6 text-center">
+          <p>Loading order details...</p>
+        </div>
+      );
+    }
     return (
       <div className="p-6 text-center">
         <h2 className="text-2xl font-bold text-red-600 mb-4">Order Not Found</h2>
@@ -44,7 +110,7 @@ const OrderConfirmation = () => {
     );
   }
 
-  const { items, address, paymentMethod, orderId, total } = state;
+  const { items, address, paymentMethod, orderId, total } = state as OrderState;
 
   return (
     <div className="order-confirmation-page page-section">

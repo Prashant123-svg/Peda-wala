@@ -306,7 +306,7 @@ const handleConfirmOrder = async () => {
     clearCart();
     localStorage.removeItem("checkoutCart");
 
-    // Navigate to order confirmation with order details
+    // Build order summary
     const order = {
       items: cart,
       address: {
@@ -321,7 +321,20 @@ const handleConfirmOrder = async () => {
       total: totalAmount,
     };
 
-    navigate("/order-confirmation", { state: order });
+    // Save last order to localStorage so the confirmation page can recover if user refreshes
+    try {
+      localStorage.setItem("lastOrder", JSON.stringify(order));
+    } catch (e) {
+      console.warn("Could not persist lastOrder:", e);
+    }
+
+    // Navigate to confirmation and include orderId in query string for robustness
+    const orderId = data.order?._id;
+    if (orderId) {
+      navigate(`/order-confirmation?orderId=${orderId}`, { state: order });
+    } else {
+      navigate("/order-confirmation", { state: order });
+    }
   } catch (err: any) {
     console.error("Error placing order:", err);
     setError(err.message || "Failed to place order");
