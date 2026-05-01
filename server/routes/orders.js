@@ -8,19 +8,35 @@ const router = express.Router();
 // ✅ Create/Confirm a new order
 router.post("/create-order", authMiddleware, async (req, res) => {
   try {
+    console.log("\n📥 CREATE ORDER REQUEST");
+    console.log("👤 User ID:", req.user?.id);
+    console.log("📦 Items count:", req.body?.items?.length);
+    console.log("💰 Total price:", req.body?.totalPrice);
+
     const { items, totalPrice, deliveryAddress, phoneNumber, paymentMethod } = req.body;
 
     if (!items || items.length === 0) {
+      console.error("❌ Cart is empty");
       return res.status(400).json({ message: "Cart is empty" });
     }
 
     if (!deliveryAddress) {
+      console.error("❌ Delivery address missing");
       return res.status(400).json({ message: "Delivery address is required" });
     }
 
     if (!phoneNumber) {
+      console.error("❌ Phone number missing");
       return res.status(400).json({ message: "Phone number is required" });
     }
+
+    // Verify user exists
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      console.error("❌ User not found:", req.user.id);
+      return res.status(404).json({ message: "User not found" });
+    }
+    console.log("✅ User verified:", user.email);
 
     // Create order in database
     const newOrder = new Order({
@@ -36,17 +52,21 @@ router.post("/create-order", authMiddleware, async (req, res) => {
       deliveryBoyId: null,
     });
 
-    await newOrder.save();
+    console.log("💾 Saving order to DB...");
+    const savedOrder = await newOrder.save();
+    console.log("✅ Order saved successfully:", savedOrder._id);
 
     res.status(201).json({
       message: "✅ Order confirmed successfully!",
-      order: newOrder,
+      order: savedOrder,
     });
   } catch (error) {
-    console.error("Error creating order:", error);
+    console.error("\n❌ ERROR CREATING ORDER:", error);
+    console.error("Stack:", error.stack);
     res.status(500).json({
       message: "Error creating order",
       error: error.message,
+      details: error.errors || error.stack,
     });
   }
 });
@@ -54,6 +74,9 @@ router.post("/create-order", authMiddleware, async (req, res) => {
 // ✅ Get all orders for the current user
 router.get("/my-orders", authMiddleware, async (req, res) => {
   try {
+    console.log("\n📋 FETCH MY ORDERS REQUEST");
+    console.log("👤 User ID:", req.user?.id);
+
     const orders = await Order.find({ userId: req.user.id })
       .populate("subAdminId", "_id name email")
       .populate("deliveryBoyId", "_id name phone")
@@ -61,12 +84,15 @@ router.get("/my-orders", authMiddleware, async (req, res) => {
         createdAt: -1,
       });
 
+    console.log("✅ Found", orders.length, "order(s) for user");
+
     res.json({
       message: "Orders fetched successfully",
       orders,
+      count: orders.length,
     });
   } catch (error) {
-    console.error("Error fetching orders:", error);
+    console.error("\n❌ ERROR FETCHING ORDERS:", error);
     res.status(500).json({
       message: "Error fetching orders",
       error: error.message,
