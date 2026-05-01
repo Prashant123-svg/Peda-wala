@@ -522,6 +522,7 @@ const Profile = () => {
                 </p>
               </div>
             ) : (
+              <>
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12">
                 {/* Left Column - Form */}
                 <div className="lg:col-span-2">
@@ -644,89 +645,89 @@ const Profile = () => {
                   <p className="text-sm text-green-600 font-semibold">✅ Your profile is 100% complete!</p>
                 )}
               </div>
-
-              {/* Phone Verification */}
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
-                <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-4">📱 Phone Verification</h3>
-                {user.isPhoneVerified ? (
-                  <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                    <p className="text-sm sm:text-base text-green-800 font-semibold">✅ Phone verified and secure!</p>
-                  </div>
-                ) : (
-                  <button
-                    onClick={() => setPhoneVerificationMode(!phoneVerificationMode)}
-                    className="w-full px-4 py-3 sm:py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors text-base sm:text-sm"
-                  >
-                    🔐 Verify Phone
-                  </button>
-                )}
-
-                {phoneVerificationMode && !user.isPhoneVerified && (
-                  <div className="mt-4 space-y-4">
-                    {otpError && <div className="p-3 sm:p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm sm:text-base font-medium">{otpError}</div>}
-                    {otpSuccess && <div className="p-3 sm:p-4 bg-green-50 border border-green-200 text-green-700 rounded-lg text-sm sm:text-base font-medium">{otpSuccess}</div>}
-
-                    {!otpSent ? (
-                      <>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
-                          <input
-                            type="tel"
-                            className="w-full px-4 py-3 sm:py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 text-base sm:text-sm placeholder-gray-400"
-                            value={tempPhone}
-                            onChange={(e) => setTempPhone(e.target.value)}
-                            placeholder="Enter 10-digit phone number"
-                          />
-                        </div>
-                        <button
-                          onClick={handleSendOtp}
-                          disabled={otpLoading}
-                          className="w-full px-4 py-3 sm:py-2.5 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-semibold rounded-lg transition-colors text-base sm:text-sm"
-                        >
-                          {otpLoading ? "Sending..." : "📱 Send OTP"}
-                        </button>
-                      </>
-                    ) : (
-                      <>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Enter OTP</label>
-                          <input
-                            type="text"
-                            className="w-full px-4 py-3 sm:py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 uppercase text-center text-base sm:text-sm tracking-widest placeholder-gray-400 font-semibold"
-                            value={otp}
-                            onChange={(e) => setOtp(e.target.value.toUpperCase())}
-                            placeholder="000000"
-                            maxLength={6}
-                          />
-                          <p className="text-xs sm:text-sm text-gray-500 mt-2">6-digit OTP sent to your phone</p>
-                        </div>
-                        <div className="flex flex-col sm:flex-row gap-2 sm:gap-2">
-                          <button
-                            onClick={handleVerifyOtp}
-                            disabled={otpLoading}
-                            className="flex-1 px-4 py-3 sm:py-2.5 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white font-semibold rounded-lg transition-colors text-base sm:text-sm"
-                          >
-                            {otpLoading ? "Verifying..." : "✅ Verify OTP"}
-                          </button>
-                          <button
-                            onClick={() => {
-                              setOtp("");
-                              setOtpSent(false);
-                            }}
-                            disabled={otpLoading}
-                            className="flex-1 px-4 py-3 sm:py-2.5 bg-gray-300 hover:bg-gray-400 disabled:bg-gray-300 text-gray-900 font-semibold rounded-lg transition-colors text-base sm:text-sm"
-                          >
-                            🔙 Back
-                          </button>
-                        </div>
-                      </>
-                    )}
-                  </div>
-                )}
-              </div>
             </div>
           </div>
+
+          {/* Phone Verification - Full Width for All Screens */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6 mt-6">
+            <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-4">📱 Phone Verification</h3>
+            {user.isPhoneVerified ? (
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                <p className="text-sm sm:text-base text-green-800 font-semibold">✅ Phone verified and secure!</p>
+              </div>
+            ) : (
+              <button
+                onClick={() => setPhoneVerificationMode(!phoneVerificationMode)}
+                className="w-full px-4 py-3 sm:py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors text-base sm:text-sm"
+              >
+                🔐 Verify Phone
+              </button>
             )}
+
+            {phoneVerificationMode && !user.isPhoneVerified && (
+              <div className="mt-4 space-y-4">
+                {otpError && <div className="p-3 sm:p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm sm:text-base font-medium">{otpError}</div>}
+                {otpSuccess && <div className="p-3 sm:p-4 bg-green-50 border border-green-200 text-green-700 rounded-lg text-sm sm:text-base font-medium">{otpSuccess}</div>}
+
+                {!otpSent ? (
+                  <>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                      <input
+                        type="tel"
+                        className="w-full px-4 py-3 sm:py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 text-base sm:text-sm placeholder-gray-400"
+                        value={tempPhone}
+                        onChange={(e) => setTempPhone(e.target.value)}
+                        placeholder="Enter 10-digit phone number"
+                      />
+                    </div>
+                    <button
+                      onClick={handleSendOtp}
+                      disabled={otpLoading}
+                      className="w-full px-4 py-3 sm:py-2.5 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-semibold rounded-lg transition-colors text-base sm:text-sm"
+                    >
+                      {otpLoading ? "Sending..." : "📱 Send OTP"}
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Enter OTP</label>
+                      <input
+                        type="text"
+                        className="w-full px-4 py-3 sm:py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 uppercase text-center text-base sm:text-sm tracking-widest placeholder-gray-400 font-semibold"
+                        value={otp}
+                        onChange={(e) => setOtp(e.target.value.toUpperCase())}
+                        placeholder="000000"
+                        maxLength={6}
+                      />
+                      <p className="text-xs sm:text-sm text-gray-500 mt-2">6-digit OTP sent to your phone</p>
+                    </div>
+                    <div className="flex flex-col sm:flex-row gap-2 sm:gap-2">
+                      <button
+                        onClick={handleVerifyOtp}
+                        disabled={otpLoading}
+                        className="flex-1 px-4 py-3 sm:py-2.5 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white font-semibold rounded-lg transition-colors text-base sm:text-sm"
+                      >
+                        {otpLoading ? "Verifying..." : "✅ Verify OTP"}
+                      </button>
+                      <button
+                        onClick={() => {
+                          setOtp("");
+                          setOtpSent(false);
+                        }}
+                        disabled={otpLoading}
+                        className="flex-1 px-4 py-3 sm:py-2.5 bg-gray-300 hover:bg-gray-400 disabled:bg-gray-300 text-gray-900 font-semibold rounded-lg transition-colors text-base sm:text-sm"
+                      >
+                        🔙 Back
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
+          </>
           </>
         )}
 
