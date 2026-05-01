@@ -149,20 +149,13 @@ const Orders: React.FC = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-
+      const { parseResponse, parseErrorResponse } = await import("../utils/fetchUtils");
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
+        const errorData = await parseErrorResponse(response);
         throw new Error(errorData.message || `HTTP Error: ${response.status} ${response.statusText}`);
       }
 
-      const text = await response.text();
-      if (!text) {
-        setOrders([]);
-        setLoadingOrders(false);
-        return;
-      }
-
-      const data = JSON.parse(text);
+      const data = (await parseResponse(response)) || {};
       setOrders(data.orders || []);
       setError("");
     } catch (err: any) {
@@ -240,12 +233,13 @@ const Orders: React.FC = () => {
         }),
       });
 
+      const { parseResponse, parseErrorResponse } = await import("../utils/fetchUtils");
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await parseErrorResponse(response);
         throw new Error(errorData.message || "Failed to create order");
       }
 
-      const data = await response.json();
+      const data = (await parseResponse(response)) || {};
       console.log("Order created:", data);
 
       // Clear cart and refresh orders
@@ -299,7 +293,8 @@ const Orders: React.FC = () => {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
+        const { parseErrorResponse } = await import("../utils/fetchUtils");
+        const errorData = await parseErrorResponse(response);
         throw new Error(errorData.message || "Failed to update order status");
       }
 
