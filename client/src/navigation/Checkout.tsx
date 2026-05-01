@@ -409,120 +409,143 @@ const handleConfirmOrder = async () => {
 
         {/* STEP 1: Address */}
         {step === 1 && (
-          <div className="bg-white p-4 sm:p-6 lg:p-8 rounded-lg shadow-md">
-            <h3 className="text-lg sm:text-xl font-semibold mb-4 sm:mb-6">Shipping Address</h3>
-            <div className="space-y-4">
-              <div>
-                <input
-                  type="text"
-                  placeholder="Full Name"
-                  value={address.name}
-                  onChange={(e) => {
-                    setAddress({ ...address, name: e.target.value });
-                    if (errors.name) setErrors({ ...errors, name: "" });
-                  }}
-                  className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base ${errors.name ? "border-red-500" : "border-gray-300"}`}
-                />
-                {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
-              </div>
-              
-              <div>
-                <input
-                  type="text"
-                  placeholder="Phone"
-                  value={address.phone}
-                  onChange={(e) => {
-                    setAddress({ ...address, phone: e.target.value });
-                    if (errors.phone) setErrors({ ...errors, phone: "" });
-                  }}
-                  className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base ${errors.phone ? "border-red-500" : "border-gray-300"}`}
-                />
-                {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>}
-              </div>
-              
-              <div>
-                <input
-                  type="text"
-                  placeholder="Street Address"
-                  value={address.street}
-                  onChange={(e) => {
-                    setAddress({ ...address, street: e.target.value });
-                    if (errors.street) setErrors({ ...errors, street: "" });
-                  }}
-                  className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base ${errors.street ? "border-red-500" : "border-gray-300"}`}
-                />
-                {errors.street && <p className="text-red-500 text-sm mt-1">{errors.street}</p>}
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <div className="bg-white p-4 sm:p-6 lg:p-8 rounded-lg shadow-md">
+              <h3 className="text-lg sm:text-xl font-semibold mb-4 sm:mb-6">Shipping Address</h3>
+              <div className="space-y-4">
                 <div>
-                  <select
-                    value={address.state}
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                  <input
+                    type="text"
+                    placeholder="Enter your full name"
+                    value={address.name}
                     onChange={(e) => {
-                      setAddress({ ...address, state: e.target.value, city: "" });
-                      if (errors.state) setErrors({ ...errors, state: "" });
+                      setAddress({ ...address, name: e.target.value });
+                      if (errors.name) setErrors({ ...errors, name: "" });
                     }}
-                    className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base bg-white ${errors.state ? "border-red-500" : "border-gray-300"}`}
-                  >
-                    {INDIAN_STATES.map((state) => (
-                      <option key={state} value={state === "Select a state" ? "" : state}>
-                        {state}
-                      </option>
-                    ))}
-                  </select>
-                  {errors.state && <p className="text-red-500 text-sm mt-1">{errors.state}</p>}
+                    className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base font-medium transition-colors ${errors.name ? "border-red-500 bg-red-50" : address.name ? "border-green-400 bg-green-50" : "border-gray-300 bg-white"}`}
+                  />
+                  {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
                 </div>
                 
                 <div>
-                  <select
-                    value={address.city}
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                  <input
+                    type="text"
+                    placeholder="10-digit phone number"
+                    value={address.phone}
                     onChange={(e) => {
-                      setAddress({ ...address, city: e.target.value });
-                      if (errors.city) setErrors({ ...errors, city: "" });
+                      setAddress({ ...address, phone: e.target.value });
+                      if (errors.phone) setErrors({ ...errors, phone: "" });
                     }}
-                    disabled={!address.state}
-                    className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base bg-white ${errors.city ? "border-red-500" : "border-gray-300"} ${!address.state ? "bg-gray-100 cursor-not-allowed" : ""}`}
-                  >
-                    <option value="">Select a city</option>
-                    {address.state && STATE_CITY_MAP[address.state] ? (
-                      STATE_CITY_MAP[address.state].map((city) => (
-                        <option key={city} value={city}>
-                          {city}
+                    className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base font-medium transition-colors ${errors.phone ? "border-red-500 bg-red-50" : address.phone ? "border-green-400 bg-green-50" : "border-gray-300 bg-white"}`}
+                  />
+                  {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>}
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Street Address</label>
+                  <input
+                    type="text"
+                    placeholder="e.g., 123 Main Street, Apartment 4B"
+                    value={address.street}
+                    onChange={(e) => {
+                      setAddress({ ...address, street: e.target.value });
+                      if (errors.street) setErrors({ ...errors, street: "" });
+                    }}
+                    className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base font-medium transition-colors ${errors.street ? "border-red-500 bg-red-50" : address.street ? "border-green-400 bg-green-50" : "border-gray-300 bg-white"}`}
+                  />
+                  {errors.street && <p className="text-red-500 text-sm mt-1">{errors.street}</p>}
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">State</label>
+                    <select
+                      value={address.state}
+                      onChange={(e) => {
+                        setAddress({ ...address, state: e.target.value, city: "" });
+                        if (errors.state) setErrors({ ...errors, state: "" });
+                      }}
+                      className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base bg-white font-medium transition-colors ${errors.state ? "border-red-500 bg-red-50" : address.state ? "border-green-400 bg-green-50" : "border-gray-300"}`}
+                    >
+                      {INDIAN_STATES.map((state) => (
+                        <option key={state} value={state === "Select a state" ? "" : state}>
+                          {state}
                         </option>
-                      ))
-                    ) : (
-                      <option disabled>Please select a state first</option>
-                    )}
-                  </select>
-                  {errors.city && <p className="text-red-500 text-sm mt-1">{errors.city}</p>}
+                      ))}
+                    </select>
+                    {errors.state && <p className="text-red-500 text-sm mt-1">{errors.state}</p>}
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
+                    <select
+                      value={address.city}
+                      onChange={(e) => {
+                        setAddress({ ...address, city: e.target.value });
+                        if (errors.city) setErrors({ ...errors, city: "" });
+                      }}
+                      disabled={!address.state}
+                      className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base bg-white font-medium transition-colors ${errors.city ? "border-red-500 bg-red-50" : address.city ? "border-green-400 bg-green-50" : "border-gray-300"} ${!address.state ? "bg-gray-100 cursor-not-allowed opacity-50" : ""}`}
+                    >
+                      <option value="">Select a city</option>
+                      {address.state && STATE_CITY_MAP[address.state] ? (
+                        STATE_CITY_MAP[address.state].map((city) => (
+                          <option key={city} value={city}>
+                            {city}
+                          </option>
+                        ))
+                      ) : (
+                        <option disabled>Please select a state first</option>
+                      )}
+                    </select>
+                    {errors.city && <p className="text-red-500 text-sm mt-1">{errors.city}</p>}
+                  </div>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Pincode</label>
+                  <input
+                    type="text"
+                    placeholder="6-digit pincode"
+                    value={address.pincode}
+                    onChange={(e) => {
+                      setAddress({ ...address, pincode: e.target.value });
+                      if (errors.pincode) setErrors({ ...errors, pincode: "" });
+                    }}
+                    className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base font-medium transition-colors ${errors.pincode ? "border-red-500 bg-red-50" : address.pincode ? "border-green-400 bg-green-50" : "border-gray-300 bg-white"}`}
+                  />
+                  {errors.pincode && <p className="text-red-500 text-sm mt-1">{errors.pincode}</p>}
+                </div>
+
+                <button
+                  onClick={() => {
+                    if (validateAddress()) {
+                      setStep(2);
+                    }
+                  }}
+                  className="w-full mt-6 bg-green-600 hover:bg-green-700 text-white py-3 px-6 rounded-lg shadow-md font-semibold transition-colors text-sm sm:text-base"
+                >
+                  Continue to Payment →
+                </button>
+              </div>
+            </div>
+
+            {/* Mobile: Address Preview */}
+            {(address.name || address.phone || address.street || address.city || address.pincode) && (
+              <div className="lg:hidden mt-4 bg-blue-50 border border-blue-300 rounded-lg p-4 shadow-sm">
+                <h4 className="font-semibold text-blue-900 mb-3 text-sm">📍 Address Preview</h4>
+                <div className="space-y-2 text-sm text-gray-700">
+                  {address.name && <p><span className="font-medium text-gray-900">{address.name}</span></p>}
+                  {address.phone && <p><span className="font-medium">📱 Phone:</span> {address.phone}</p>}
+                  {address.street && <p><span className="font-medium">📮 Address:</span> {address.street}</p>}
+                  {address.state && <p><span className="font-medium">🏛️ State:</span> {address.state}</p>}
+                  {address.city && <p><span className="font-medium">🏙️ City:</span> {address.city}</p>}
+                  {address.pincode && <p><span className="font-medium">📮 Pincode:</span> {address.pincode}</p>}
                 </div>
               </div>
-              
-              <div>
-                <input
-                  type="text"
-                  placeholder="Pincode"
-                  value={address.pincode}
-                  onChange={(e) => {
-                    setAddress({ ...address, pincode: e.target.value });
-                    if (errors.pincode) setErrors({ ...errors, pincode: "" });
-                  }}
-                  className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base ${errors.pincode ? "border-red-500" : "border-gray-300"}`}
-                />
-                {errors.pincode && <p className="text-red-500 text-sm mt-1">{errors.pincode}</p>}
-              </div>
-
-              <button
-                onClick={() => {
-                  if (validateAddress()) {
-                    setStep(2);
-                  }
-                }}
-                className="w-full mt-6 bg-green-600 hover:bg-green-700 text-white py-3 px-6 rounded-lg shadow-md font-semibold transition-colors text-sm sm:text-base"
-              >
-                Continue to Payment →
-              </button>
-            </div>
+            )}
           </div>
         )}
 
