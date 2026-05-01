@@ -283,19 +283,30 @@ const handleConfirmOrder = async () => {
       }),
     });
 
+    // Safely parse response body (handles empty responses or non-JSON)
+    const parseResponse = async (res: Response) => {
+      const text = await res.text();
+      if (!text) return null;
+      try {
+        return JSON.parse(text);
+      } catch (e) {
+        return { raw: text };
+      }
+    };
+
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || "Failed to create order");
+      const errorData = await parseResponse(response);
+      throw new Error((errorData && (errorData.message || errorData.msg)) || `Failed to create order (HTTP ${response.status})`);
     }
 
-    const data = await response.json();
+    const data = (await parseResponse(response)) || {};
     console.log("Order created in database:", data);
 
     // Clear cart and localStorage
     clearCart();
     localStorage.removeItem("checkoutCart");
 
-    // Navigate to order confirmation with order details
+    // Build order summary
     const order = {
       items: cart,
       address: {
@@ -310,7 +321,20 @@ const handleConfirmOrder = async () => {
       total: totalAmount,
     };
 
-    navigate("/order-confirmation", { state: order });
+    // Save last order to localStorage so the confirmation page can recover if user refreshes
+    try {
+      localStorage.setItem("lastOrder", JSON.stringify(order));
+    } catch (e) {
+      console.warn("Could not persist lastOrder:", e);
+    }
+
+    // Navigate to confirmation and include orderId in query string for robustness
+    const orderId = data.order?._id;
+    if (orderId) {
+      navigate(`/order-confirmation?orderId=${orderId}`, { state: order });
+    } else {
+      navigate("/order-confirmation", { state: order });
+    }
   } catch (err: any) {
     console.error("Error placing order:", err);
     setError(err.message || "Failed to place order");

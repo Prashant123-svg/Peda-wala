@@ -77,7 +77,8 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({
 
       if (!response.ok) throw new Error('Network response failed');
 
-      const data = await response.json();
+      const { parseResponse } = await import("../utils/fetchUtils");
+      const data = (await parseResponse(response)) || {};
 
       // Add bot response
       const botMessage: Message = {
@@ -121,12 +122,13 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({
         })
       });
 
-      const data = await response.json();
+      const { parseResponse } = await import("../utils/fetchUtils");
+      const data = (await parseResponse(response)) || {};
 
       const escalationMessage: Message = {
         id: Date.now().toString(),
         type: 'bot',
-        content: `${data.message}\n\n📱 WhatsApp: ${data.contactOptions.whatsapp}\n📞 Call: ${data.contactOptions.phone}`,
+        content: `${data.message || data.raw || 'Support contacted'}` + (data.contactOptions ? `\n\n📱 WhatsApp: ${data.contactOptions.whatsapp}\n📞 Call: ${data.contactOptions.phone}` : ''),
         timestamp: new Date()
       };
 

@@ -47,11 +47,13 @@ const Orders: React.FC = () => {
         },
       });
 
+      const { parseResponse, parseErrorResponse } = await import("../utils/fetchUtils");
       if (!response.ok) {
-        throw new Error("Failed to fetch orders");
+        const err = await parseErrorResponse(response);
+        throw new Error(err.message || "Failed to fetch orders");
       }
 
-      const data = await response.json();
+      const data = (await parseResponse(response)) || {};
       setOrders(data.orders || []);
       setError("");
     } catch (err: any) {
@@ -106,8 +108,9 @@ const Orders: React.FC = () => {
         }),
       });
 
+      const { parseResponse: _parseResponse, parseErrorResponse: _parseError } = await import("../utils/fetchUtils");
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await _parseError(response);
         throw new Error(errorData.message || "Failed to create order");
       }
 
