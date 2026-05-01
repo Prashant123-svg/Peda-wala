@@ -454,7 +454,7 @@ const handleConfirmOrder = async () => {
                 {errors.street && <p className="text-red-500 text-sm mt-1">{errors.street}</p>}
               </div>
               
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <select
                     value={address.state}
@@ -589,7 +589,7 @@ const handleConfirmOrder = async () => {
                   {errors.cardNumber && <p className="text-red-500 text-sm mt-1">{errors.cardNumber}</p>}
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Expiry (MM/YY)</label>
                     <input
