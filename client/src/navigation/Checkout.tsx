@@ -264,8 +264,10 @@ const handleConfirmOrder = async () => {
       return;
     }
 
-    const apiUrl = import.meta.env.DEV 
-      ? "http://localhost:5000/api/orders/create-order"
+    const API_BASE = (import.meta.env.VITE_API_BASE_URL as string) || (import.meta.env.DEV ? "http://localhost:5000" : "");
+
+    const apiUrl = API_BASE
+      ? `${API_BASE}/api/orders/create-order`
       : "/api/orders/create-order";
 
     const response = await fetch(apiUrl, {

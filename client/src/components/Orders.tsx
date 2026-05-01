@@ -41,7 +41,10 @@ const Orders: React.FC = () => {
         return;
       }
 
-      const response = await fetch("/api/orders/my-orders", {
+      const API_BASE = (import.meta.env.VITE_API_BASE_URL as string) || (import.meta.env.DEV ? "http://localhost:5000" : "");
+      const ordersUrl = API_BASE ? `${API_BASE}/api/orders/my-orders` : "/api/orders/my-orders";
+
+      const response = await fetch(ordersUrl, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -93,7 +96,10 @@ const Orders: React.FC = () => {
         return;
       }
 
-      const response = await fetch("/api/orders/create-order", {
+      const API_BASE = (import.meta.env.VITE_API_BASE_URL as string) || (import.meta.env.DEV ? "http://localhost:5000" : "");
+      const createUrl = API_BASE ? `${API_BASE}/api/orders/create-order` : "/api/orders/create-order";
+
+      const response = await fetch(createUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
