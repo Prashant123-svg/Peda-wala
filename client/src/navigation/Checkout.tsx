@@ -390,7 +390,7 @@ const handleConfirmOrder = async () => {
       <div className="w-full px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
       {/* Left - Main Form */}
-      <div className="lg:col-span-2 mx-auto w-full max-w-md sm:max-w-lg">
+      <div className="lg:col-span-2 mx-auto w-full max-w-md sm:max-w-lg lg:max-w-none">
         <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-6 sm:mb-8 text-center text-gray-800">Checkout</h2>
 
         {error && (
@@ -753,7 +753,7 @@ const handleConfirmOrder = async () => {
       </div>
 
       {/* Right: Order Summary */}
-      <div className="hidden lg:block bg-white p-5 rounded-2xl shadow-md h-fit sticky top-20">
+      <div className="bg-white p-4 sm:p-5 rounded-2xl shadow-md h-fit lg:sticky lg:top-20">
         <h3 className="text-lg font-semibold mb-3">Order Summary</h3>
         <div className="space-y-3 border-b pb-3">
           {cart.map((item: any, idx: number) => (
@@ -763,11 +763,11 @@ const handleConfirmOrder = async () => {
                 alt={item.name}
                 className="w-16 h-16 object-cover rounded"
               />
-              <div>
-                <p className="font-medium text-gray-900">{item.name}</p>
-                <div className="flex items-center gap-3 text-sm mt-1">
+              <div className="flex-1 min-w-0">
+                <p className="font-medium text-gray-900 truncate">{item.name}</p>
+                <div className="flex items-center gap-2 text-sm mt-1 flex-wrap">
                   <span className="text-gray-600">Qty: {item.qty}</span>
-                  <span className="bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded font-semibold text-xs">
+                  <span className="bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded font-semibold text-xs whitespace-nowrap">
                     {getItemWeightLabel(item)}
                   </span>
                 </div>
