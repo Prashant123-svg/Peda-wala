@@ -737,8 +737,9 @@ const Profile = () => {
 
         {/* Orders Tab */}
         {!isAdmin && activeTab === "orders" && (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 sm:p-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6 pb-4 border-b-2 border-blue-400">My Orders</h2>
+          <>
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 sm:p-8">
+              <h2 className="text-2xl font-bold text-gray-900 mb-6 pb-4 border-b-2 border-blue-400">My Orders</h2>
             
             {orders.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -784,7 +785,8 @@ const Profile = () => {
                 </NavLink>
               </div>
             )}
-          </div>
+            </div>
+          </>
         )}
 
         {/* Admin Overview Tab */}
