@@ -283,12 +283,23 @@ const handleConfirmOrder = async () => {
       }),
     });
 
+    // Safely parse response body (handles empty responses or non-JSON)
+    const parseResponse = async (res: Response) => {
+      const text = await res.text();
+      if (!text) return null;
+      try {
+        return JSON.parse(text);
+      } catch (e) {
+        return { raw: text };
+      }
+    };
+
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || "Failed to create order");
+      const errorData = await parseResponse(response);
+      throw new Error((errorData && (errorData.message || errorData.msg)) || `Failed to create order (HTTP ${response.status})`);
     }
 
-    const data = await response.json();
+    const data = (await parseResponse(response)) || {};
     console.log("Order created in database:", data);
 
     // Clear cart and localStorage

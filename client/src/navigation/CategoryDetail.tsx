@@ -88,12 +88,12 @@ const CategoryDetail: React.FC = () => {
 
     console.log(`🔄 Loading products from: ${file}`);
 
-    fetch(`${API_BASE_URL}/categories/${file}`)
-      .then((res) => {
+    (async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/categories/${file}`);
+        const { parseResponse } = await import("../utils/fetchUtils");
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        return res.json();
-      })
-      .then((data) => {
+        const data = (await parseResponse(res)) || {};
         console.log(`✅ API Response:`, data);
         const productsArray = Array.isArray(data?.Categories) ? data.Categories : [];
         console.log(`📦 Total products loaded: ${productsArray.length}`);
@@ -101,12 +101,13 @@ const CategoryDetail: React.FC = () => {
         if (productsArray.length === 0) {
           setError("No products found in this category");
         }
-      })
-      .catch((err) => {
+      } catch (err) {
         console.error(`❌ Error:`, err);
         setError(`Failed to load products: ${String(err)}`);
-      })
-      .finally(() => setLoading(false));
+      } finally {
+        setLoading(false);
+      }
+    })();
   }, [categoryInfo, name]);
 
   if (error) {

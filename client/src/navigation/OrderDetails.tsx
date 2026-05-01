@@ -56,11 +56,13 @@ const OrderDetails: React.FC = () => {
         },
       });
 
+      const { parseResponse, parseErrorResponse } = await import("../utils/fetchUtils");
       if (!response.ok) {
-        throw new Error(`Failed to fetch order details: ${response.status}`);
+        const err = await parseErrorResponse(response);
+        throw new Error(err.message || `Failed to fetch order details: ${response.status}`);
       }
 
-      const data = await response.json();
+      const data = (await parseResponse(response)) || {};
       setOrder(data.order);
       setError("");
     } catch (err: any) {

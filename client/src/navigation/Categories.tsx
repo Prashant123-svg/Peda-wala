@@ -38,16 +38,19 @@ const Categories: React.FC = () => {
     setLoading(true);
     setError("");
 
-    fetch(`${API_BASE_URL}/categories/${file}`)
-      .then((res) => {
+    (async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/categories/${file}`);
+        const { parseResponse } = await import("../utils/fetchUtils");
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        return res.json();
-      })
-      .then((data) => {
+        const data = (await parseResponse(res)) || {};
         setCategories(Array.isArray(data?.Categories) ? data.Categories : []);
-      })
-      .catch((err) => setError(`Failed to load: ${String(err)}`))
-      .finally(() => setLoading(false));
+      } catch (err) {
+        setError(`Failed to load: ${String(err)}`);
+      } finally {
+        setLoading(false);
+      }
+    })();
   }, [selectedCategory]);
 
   const filtered = useMemo(() => {

@@ -77,12 +77,12 @@ const ProductDetail: React.FC = () => {
       }
     }
     
-    fetch(`${API_BASE_URL}/categories/product/${productId}`)
-      .then((res) => {
+    (async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/categories/product/${productId}`);
+        const { parseResponse } = await import("../utils/fetchUtils");
         if (!res.ok) throw new Error("Product not found");
-        return res.json();
-      })
-      .then((data) => {
+        const data = (await parseResponse(res)) || {};
         console.log("✅ Product data:", data);
         setProduct(data);
         setMainImg(getImageUrl(data.image));
@@ -94,12 +94,13 @@ const ProductDetail: React.FC = () => {
         } else {
           setSelectedWeight(weights[0]);
         }
-      })
-      .catch((err) => {
+      } catch (err) {
         console.error("❌ Error:", err);
         setError("Failed to load product details");
-      })
-      .finally(() => setLoading(false));
+      } finally {
+        setLoading(false);
+      }
+    })();
   }, [id]);
 
   const { addToCart: addToCartContext } = useCart();

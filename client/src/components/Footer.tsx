@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { BsInstagram, BsFacebook, BsYoutube, BsWhatsapp } from "react-icons/bs";
 import { API_BASE_URL } from "../utils/apiConfig";
+import { parseResponse } from "../utils/fetchUtils";
 
 const Footer = () => {
   const [email, setEmail] = useState("");
@@ -20,8 +21,8 @@ const Footer = () => {
         body: JSON.stringify({ email }),
       });
 
-      const data = await res.json();
-      setMessage(data.message);
+      const data = (await parseResponse(res)) || {};
+      setMessage(data.message || String(data.raw || "Subscription response received"));
       setEmail(""); // clear input after success
     } catch (err) {
       setMessage("Something went wrong. Try again later.");

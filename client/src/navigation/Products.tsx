@@ -29,9 +29,11 @@ const Products = () => {
   ];
 
   useEffect(() => {
-    fetch(`${API_ORIGIN}/products/products.json`)
-      .then((res) => res.json())
-      .then((data) => {
+    (async () => {
+      try {
+        const res = await fetch(`${API_ORIGIN}/products/products.json`);
+        const { parseResponse } = await import("../utils/fetchUtils");
+        const data = (await parseResponse(res)) || [];
         const normalizedData = data.map((product: Product) => ({
           ...product,
           image: product.image.startsWith("http")
@@ -39,8 +41,10 @@ const Products = () => {
             : `${API_ORIGIN}${product.image}`,
         }));
         setProducts(normalizedData);
-      })
-      .catch((err) => console.error("Error loading products:", err));
+      } catch (err) {
+        console.error("Error loading products:", err);
+      }
+    })();
   }, []);
 
 
