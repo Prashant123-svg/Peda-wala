@@ -390,7 +390,7 @@ const handleConfirmOrder = async () => {
       <div className="w-full px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
       {/* Left - Main Form */}
-      <div className="lg:col-span-2">
+      <div className="lg:col-span-2 mx-auto w-full max-w-md sm:max-w-lg">
         <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-6 sm:mb-8 text-center text-gray-800">Checkout</h2>
 
         {error && (
@@ -753,7 +753,7 @@ const handleConfirmOrder = async () => {
       </div>
 
       {/* Right: Order Summary */}
-      <div className="bg-white p-5 rounded-2xl shadow-md h-fit sticky top-20">
+      <div className="hidden lg:block bg-white p-5 rounded-2xl shadow-md h-fit sticky top-20">
         <h3 className="text-lg font-semibold mb-3">Order Summary</h3>
         <div className="space-y-3 border-b pb-3">
           {cart.map((item: any, idx: number) => (
