@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { API_BASE_URL } from "../utils/apiConfig";
 
 interface ProfileData {
   deliveryBoyProfile?: {
@@ -162,6 +163,7 @@ const RoleRequestApprovals: React.FC<RoleRequestApprovalsProps> = ({ isVisible }
       setManagementLoading(true);
 
       const response = await axios.get("http://localhost:5000/api/auth/admin/all-users", {
+        const response = await axios.get(`${API_BASE_URL}/auth/admin/all-users`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -181,6 +183,7 @@ const RoleRequestApprovals: React.FC<RoleRequestApprovalsProps> = ({ isVisible }
       setLoading(true);
       const response = await axios.get(
         "http://localhost:5000/api/role/admin/approval-history",
+         `${API_BASE_URL}/role/admin/approval-history`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -282,7 +285,9 @@ const RoleRequestApprovals: React.FC<RoleRequestApprovalsProps> = ({ isVisible }
       const endpoint =
         role === "subAdmin"
           ? `http://localhost:5000/api/admin/remove-subadmin/${userId}`
+           ? `${API_BASE_URL}/admin/remove-subadmin/${userId}`
           : `http://localhost:5000/api/admin/remove-deliveryboy/${userId}`;
+           : `${API_BASE_URL}/admin/remove-deliveryboy/${userId}`;
 
       await axios.delete(endpoint, {
         headers: { Authorization: `Bearer ${token}` },

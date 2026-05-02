@@ -10,6 +10,7 @@
 
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { API_BASE_URL } from "../utils/apiConfig";
 
 interface Order {
   orderId: string;
@@ -76,7 +77,7 @@ export function DeliveryAssignmentPanel() {
 
       // 1. Fetch unassigned orders ready for delivery
       const ordersRes = await axios.get(
-        "http://localhost:5000/api/delivery/unassigned-orders",
+        `${API_BASE_URL}/delivery/unassigned-orders`,
         { headers }
       );
       // Map response to component format
@@ -94,7 +95,7 @@ export function DeliveryAssignmentPanel() {
 
       // 2. Fetch available delivery boys from ADMIN route
       const dbRes = await axios.get(
-        "http://localhost:5000/api/admin/deliveryboys",
+        `${API_BASE_URL}/admin/deliveryboys`,
         { headers }
       );
       setDeliveryBoys(dbRes.data.deliveryboys || []);
@@ -119,7 +120,7 @@ export function DeliveryAssignmentPanel() {
       setErrorMessage("");
 
       const response = await axios.put(
-        `http://localhost:5000/api/delivery/order/${selectedOrder.orderId}/assign`,
+        `${API_BASE_URL}/delivery/order/${selectedOrder.orderId}/assign`,
         {
           deliveryBoyId: selectedDeliveryBoy._id
         },
