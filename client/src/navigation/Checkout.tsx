@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
+import { API_BASE_URL } from "../utils/apiConfig";
 
 const INDIAN_STATES = [
   "Select a state",
@@ -264,11 +265,7 @@ const handleConfirmOrder = async () => {
       return;
     }
 
-    const API_BASE = (import.meta.env.VITE_API_BASE_URL as string) || (import.meta.env.DEV ? "http://localhost:5000" : "");
-
-    const apiUrl = API_BASE
-      ? `${API_BASE}/api/orders/create-order`
-      : "/api/orders/create-order";
+    const apiUrl = `${API_BASE_URL}/orders/create-order`;
 
     const response = await fetch(apiUrl, {
       method: "POST",

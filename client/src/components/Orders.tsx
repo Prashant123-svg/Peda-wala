@@ -1,6 +1,7 @@
 // src/components/Orders.tsx
 import React, { useState, useEffect } from "react";
 import { useCart } from "../context/CartContext";
+import { API_BASE_URL } from "../utils/apiConfig";
 
 interface Order {
   _id: string;
@@ -41,8 +42,7 @@ const Orders: React.FC = () => {
         return;
       }
 
-      const API_BASE = (import.meta.env.VITE_API_BASE_URL as string) || (import.meta.env.DEV ? "http://localhost:5000" : "");
-      const ordersUrl = API_BASE ? `${API_BASE}/api/orders/my-orders` : "/api/orders/my-orders";
+      const ordersUrl = `${API_BASE_URL}/orders/my-orders`;
 
       const response = await fetch(ordersUrl, {
         headers: {
@@ -96,8 +96,7 @@ const Orders: React.FC = () => {
         return;
       }
 
-      const API_BASE = (import.meta.env.VITE_API_BASE_URL as string) || (import.meta.env.DEV ? "http://localhost:5000" : "");
-      const createUrl = API_BASE ? `${API_BASE}/api/orders/create-order` : "/api/orders/create-order";
+      const createUrl = `${API_BASE_URL}/orders/create-order`;
 
       const response = await fetch(createUrl, {
         method: "POST",
