@@ -4,6 +4,8 @@ import dotenv from "dotenv";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import passport from "passport";
+import session from "express-session";
 import authRoutes from "./routes/auth.js";
 import connectDB from "./config/db.js";
 import categoryRoutes from "./routes/categories.js";
@@ -27,6 +29,18 @@ const __dirname = path.dirname(__filename);
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+// ✅ Passport & Session Configuration
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "your-secret-key",
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: process.env.NODE_ENV === "production", httpOnly: true },
+  })
+);
+app.use(passport.initialize());
+app.use(passport.session());
 
 const clientDistPath = path.resolve(__dirname, "../client/dist");
 const clientIndexPath = path.join(clientDistPath, "index.html");

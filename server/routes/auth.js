@@ -1,6 +1,8 @@
 import express from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import passport from "passport";
+import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import User from "../models/user.js";// mongoose model
 import Order from "../models/Order.js";
 import { authMiddleware } from "../middlewares/Authentication.js";
@@ -38,6 +40,50 @@ const upload = multer({
   storage,
   fileFilter,
   limits: { fileSize: 5 * 1024 * 1024 } // 5MB
+});
+
+// ✅ Google OAuth Configuration
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      callbackURL: "https://pedhe-backend.onrender.com/api/auth/google/callback",
+    },
+    async (accessToken, refreshToken, profile, done) => {
+      try {
+        let user = await User.findOne({ email: profile.emails[0].value });
+
+        if (!user) {
+          user = new User({
+            googleId: profile.id,
+            name: profile.displayName,
+            email: profile.emails[0].value,
+            role: "user",
+            password: "", // Google OAuth users don't have password
+          });
+          await user.save();
+        }
+
+        return done(null, user);
+      } catch (error) {
+        return done(error, null);
+      }
+    }
+  )
+);
+
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+});
+
+passport.deserializeUser(async (id, done) => {
+  try {
+    const user = await User.findById(id);
+    done(null, user);
+  } catch (error) {
+    done(error, null);
+  }
 });
 
 // ✅ Signup Admin (First step - with admin secret key)
@@ -699,5 +745,41 @@ router.delete("/admin/delivery-boy/:deliveryBoyId", authMiddleware, async (req, 
     });
   }
 });
+
+// ✅ Google OAuth Routes
+router.get(
+  "/google",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+);
+
+router.get(
+  "/google/callback",
+  passport.authenticate("google", { failureRedirect: "/login" }),
+  (req, res) => {
+    try {
+      // Create JWT token for the user
+      const token = jwt.sign(
+        { id: req.user._id, role: req.user.role },
+        process.env.JWT_SECRET,
+        { expiresIn: "1d" }
+      );
+
+      // Redirect to frontend with token
+      res.redirect(
+        `https://peda-wala.onrender.com?token=${token}&user=${encodeURIComponent(
+          JSON.stringify({
+            id: req.user._id,
+            name: req.user.name,
+            email: req.user.email,
+            role: req.user.role,
+          })
+        )}`
+      );
+    } catch (error) {
+      console.error("Google OAuth callback error:", error);
+      res.redirect(`https://peda-wala.onrender.com?error=login_failed`);
+    }
+  }
+);
 
 export default router;
