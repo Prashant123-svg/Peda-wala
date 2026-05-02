@@ -20,14 +20,12 @@ const OrderManagement = () => {
     const fetchData = async () => {
       try {
         // Get user profile
-        const profileRes = await axios.get("http://localhost:5000/api/auth/profile", {
-          const profileRes = await axios.get(`${API_BASE_URL}/auth/profile`, {
+        const profileRes = await axios.get(`${API_BASE_URL}/auth/profile`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setUser(profileRes.data);
 
         // Fetch orders based on role
-        const ordersRes = await axios.get("http://localhost:5000/api/order-status/dashboard-orders", {
         const ordersRes = await axios.get(`${API_BASE_URL}/order-status/dashboard-orders`, {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -36,7 +34,6 @@ const OrderManagement = () => {
         // Fetch analytics if admin/subadmin
         if (profileRes.data.role === "admin" || profileRes.data.role === "subAdmin") {
           const analyticsRes = await axios.get(
-            "http://localhost:5000/api/order-status/analytics/summary",
             `${API_BASE_URL}/order-status/analytics/summary`,
             { headers: { Authorization: `Bearer ${token}` } }
           );
@@ -44,7 +41,6 @@ const OrderManagement = () => {
 
           // Fetch delivery boys for assignment
           const deliveryBoysRes = await axios.get(
-            "http://localhost:5000/api/order-status/available-delivery-boys",
             `${API_BASE_URL}/order-status/available-delivery-boys`,
             { headers: { Authorization: `Bearer ${token}` } }
           );

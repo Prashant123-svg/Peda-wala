@@ -44,8 +44,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
 
   const fetchAdminProfile = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/auth/profile", {
-        const response = await axios.get(`${API_BASE_URL}/auth/profile`, {
+      const response = await axios.get(`${API_BASE_URL}/auth/profile`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setAdminProfile(response.data);
@@ -68,8 +67,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
   const fetchOrders = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("http://localhost:5000/api/order-management/admin/all", {
-        const response = await axios.get(`${API_BASE_URL}/order-management/admin/all`, {
+      const response = await axios.get(`${API_BASE_URL}/order-management/admin/all`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setOrders(response.data.orders || []);

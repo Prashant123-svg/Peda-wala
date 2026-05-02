@@ -115,7 +115,7 @@ const RoleRequestApprovals: React.FC<RoleRequestApprovalsProps> = ({ isVisible }
         // fetch profile to determine role and then fetch pending requests if allowed
         (async () => {
           try {
-            const profileRes = await axios.get("http://localhost:5000/api/auth/profile", {
+            const profileRes = await axios.get(`${API_BASE_URL}/auth/profile`, {
               headers: { Authorization: `Bearer ${token}` },
             });
             const fetchedRole = profileRes.data.role;
@@ -140,7 +140,7 @@ const RoleRequestApprovals: React.FC<RoleRequestApprovalsProps> = ({ isVisible }
     try {
       setLoading(true);
       const response = await axios.get(
-        "http://localhost:5000/api/role/pending",
+        `${API_BASE_URL}/role/pending`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -162,8 +162,7 @@ const RoleRequestApprovals: React.FC<RoleRequestApprovalsProps> = ({ isVisible }
     try {
       setManagementLoading(true);
 
-      const response = await axios.get("http://localhost:5000/api/auth/admin/all-users", {
-        const response = await axios.get(`${API_BASE_URL}/auth/admin/all-users`, {
+      const response = await axios.get(`${API_BASE_URL}/auth/admin/all-users`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -182,8 +181,7 @@ const RoleRequestApprovals: React.FC<RoleRequestApprovalsProps> = ({ isVisible }
     try {
       setLoading(true);
       const response = await axios.get(
-        "http://localhost:5000/api/role/admin/approval-history",
-         `${API_BASE_URL}/role/admin/approval-history`,
+        `${API_BASE_URL}/role/admin/approval-history`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -204,7 +202,7 @@ const RoleRequestApprovals: React.FC<RoleRequestApprovalsProps> = ({ isVisible }
     setProcessingId(requestId);
     try {
       const response = await axios.post(
-        `http://localhost:5000/api/role/approve/${requestId}`,
+        `${API_BASE_URL}/role/approve/${requestId}`,
         { approvalNotes: "Approved" },
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -252,7 +250,7 @@ const RoleRequestApprovals: React.FC<RoleRequestApprovalsProps> = ({ isVisible }
     setProcessingId(requestId);
     try {
       await axios.post(
-        `http://localhost:5000/api/role/reject/${requestId}`,
+        `${API_BASE_URL}/role/reject/${requestId}`,
         { rejectionReason: rejectionReason[requestId] },
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -284,10 +282,8 @@ const RoleRequestApprovals: React.FC<RoleRequestApprovalsProps> = ({ isVisible }
     try {
       const endpoint =
         role === "subAdmin"
-          ? `http://localhost:5000/api/admin/remove-subadmin/${userId}`
-           ? `${API_BASE_URL}/admin/remove-subadmin/${userId}`
-          : `http://localhost:5000/api/admin/remove-deliveryboy/${userId}`;
-           : `${API_BASE_URL}/admin/remove-deliveryboy/${userId}`;
+          ? `${API_BASE_URL}/admin/remove-subadmin/${userId}`
+          : `${API_BASE_URL}/admin/remove-deliveryboy/${userId}`;
 
       await axios.delete(endpoint, {
         headers: { Authorization: `Bearer ${token}` },
