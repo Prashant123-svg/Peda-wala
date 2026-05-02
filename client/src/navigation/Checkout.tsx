@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { API_BASE_URL } from "../utils/apiConfig";
+import { safeJsonParse } from "../utils/safeJson";
 
 const INDIAN_STATES = [
   "Select a state",
@@ -73,7 +74,8 @@ const Checkout = () => {
 
  // ✅ Step 1: Try getting from state or fallback to localStorage
 const stored = localStorage.getItem("checkoutCart");
-const { cart: storedCart } = stored ? JSON.parse(stored) : { cart: [] };
+const storedCartState = safeJsonParse<{ cart?: any[] }>(stored, {});
+const { cart: storedCart } = storedCartState;
 const { cart = storedCart || [] } = location.state || {};
 
   const [step, setStep] = useState(1);

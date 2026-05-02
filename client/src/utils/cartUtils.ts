@@ -1,4 +1,5 @@
 // src/utils/cartUtils.ts
+import { safeJsonParse } from "./safeJson";
 
 export interface CartItem {
   id: number;
@@ -10,7 +11,7 @@ export interface CartItem {
 
 export const getCart = (): CartItem[] => {
   const saved = localStorage.getItem("cart");
-  return saved ? JSON.parse(saved) : [];
+  return safeJsonParse<CartItem[]>(saved, []);
 };
 
 export const saveCart = (cart: CartItem[]) => {
