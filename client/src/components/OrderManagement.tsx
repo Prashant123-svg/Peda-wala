@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { API_BASE_URL } from "../utils/apiConfig";
 import "./OrderManagement.css";
 
 const OrderManagement = () => {
@@ -19,13 +20,13 @@ const OrderManagement = () => {
     const fetchData = async () => {
       try {
         // Get user profile
-        const profileRes = await axios.get("http://localhost:5000/api/auth/profile", {
+        const profileRes = await axios.get(`${API_BASE_URL}/auth/profile`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setUser(profileRes.data);
 
         // Fetch orders based on role
-        const ordersRes = await axios.get("http://localhost:5000/api/order-status/dashboard-orders", {
+        const ordersRes = await axios.get(`${API_BASE_URL}/order-status/dashboard-orders`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setOrders(ordersRes.data.orders);
@@ -33,14 +34,14 @@ const OrderManagement = () => {
         // Fetch analytics if admin/subadmin
         if (profileRes.data.role === "admin" || profileRes.data.role === "subAdmin") {
           const analyticsRes = await axios.get(
-            "http://localhost:5000/api/order-status/analytics/summary",
+            `${API_BASE_URL}/order-status/analytics/summary`,
             { headers: { Authorization: `Bearer ${token}` } }
           );
           setAnalytics(analyticsRes.data.analytics);
 
           // Fetch delivery boys for assignment
           const deliveryBoysRes = await axios.get(
-            "http://localhost:5000/api/order-status/available-delivery-boys",
+            `${API_BASE_URL}/order-status/available-delivery-boys`,
             { headers: { Authorization: `Bearer ${token}` } }
           );
           setDeliveryBoys(deliveryBoysRes.data.deliveryBoys);
@@ -61,6 +62,7 @@ const OrderManagement = () => {
     try {
       const response = await axios.put(
         `http://localhost:5000/api/order-status/update-status/${orderId}`,
+          `${API_BASE_URL}/order-status/update-status/${orderId}`,
         { newStatus, reason },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -86,6 +88,7 @@ const OrderManagement = () => {
     try {
       const response = await axios.put(
         `http://localhost:5000/api/order-status/assign-delivery-boy/${orderId}`,
+        `${API_BASE_URL}/order-status/assign-delivery-boy/${orderId}`,
         { deliveryBoyId },
         { headers: { Authorization: `Bearer ${token}` } }
       );
