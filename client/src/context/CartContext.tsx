@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { useUserContext } from "./UserContext";
+import { safeJsonParse } from "../utils/safeJson";
 
 export interface CartProduct {
   id: number;
@@ -20,24 +22,56 @@ interface CartContextType {
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
+const GUEST_CART_KEY = "pedhewala_cart_guest";
+
+const getCartStorageKey = (userId?: string | null) =>
+  userId ? `pedhewala_cart_${userId}` : GUEST_CART_KEY;
+
+const loadCart = (storageKey: string) => safeJsonParse<CartProduct[]>(localStorage.getItem(storageKey), []);
+
+const mergeCartItems = (baseCart: CartProduct[], incomingCart: CartProduct[]) => {
+  return incomingCart.reduce<CartProduct[]>((mergedCart, incomingItem) => {
+    const existingItem = mergedCart.find(
+      (item) => item.id === incomingItem.id && item.variant === incomingItem.variant
+    );
+
+    if (existingItem) {
+      return mergedCart.map((item) =>
+        item.id === incomingItem.id && item.variant === incomingItem.variant
+          ? { ...item, qty: item.qty + incomingItem.qty }
+          : item
+      );
+    }
+
+    return [...mergedCart, incomingItem];
+  }, [...baseCart]);
+};
 
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [cart, setCart] = useState<CartProduct[]>(() => {
-    // Load cart from localStorage on mount - scoped to current user
-    const userId = localStorage.getItem("userId"); // User ID from login
-    if (!userId) return [];
-    
-    const savedCart = localStorage.getItem(`pedhewala_cart_${userId}`);
-    return savedCart ? JSON.parse(savedCart) : [];
-  });
+  const { user } = useUserContext();
+  const storageKey = getCartStorageKey(user?.id || localStorage.getItem("userId"));
+
+  const [cart, setCart] = useState<CartProduct[]>(() => loadCart(storageKey));
+
+  // Keep cart synced with the active user and preserve guest cart items on login.
+  useEffect(() => {
+    const currentKey = getCartStorageKey(user?.id || localStorage.getItem("userId"));
+    const nextCart = loadCart(currentKey);
+    const guestCart = currentKey === GUEST_CART_KEY ? [] : loadCart(GUEST_CART_KEY);
+    const mergedCart = currentKey === GUEST_CART_KEY ? nextCart : mergeCartItems(nextCart, guestCart);
+
+    setCart(mergedCart);
+
+    if (currentKey !== GUEST_CART_KEY) {
+      localStorage.setItem(currentKey, JSON.stringify(mergedCart));
+      localStorage.removeItem(GUEST_CART_KEY);
+    }
+  }, [storageKey, user?.id]);
 
   // Save cart to localStorage whenever it changes - scoped to current user
   useEffect(() => {
-    const userId = localStorage.getItem("userId");
-    if (userId) {
-      localStorage.setItem(`pedhewala_cart_${userId}`, JSON.stringify(cart));
-    }
-  }, [cart]);
+    localStorage.setItem(storageKey, JSON.stringify(cart));
+  }, [cart, storageKey]);
 
   const addToCart = (product: CartProduct) => {
     setCart((prevCart) => {
