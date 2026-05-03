@@ -1,3 +1,4 @@
+import "dotenv/config";
 import express from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
@@ -50,35 +51,43 @@ const getGoogleCallbackURL = () => {
   return process.env.GOOGLE_CALLBACK_URL || "http://localhost:5000/auth/google/callback";
 };
 
-passport.use(
-  new GoogleStrategy(
-    {
-      clientID: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: getGoogleCallbackURL(),
-    },
-    async (accessToken, refreshToken, profile, done) => {
-      try {
-        let user = await User.findOne({ email: profile.emails[0].value });
-
-        if (!user) {
-          user = new User({
-            googleId: profile.id,
-            name: profile.displayName,
-            email: profile.emails[0].value,
-            role: "user",
-            password: "", // Google OAuth users don't have password
-          });
-          await user.save();
-        }
-
-        return done(null, user);
-      } catch (error) {
-        return done(error, null);
-      }
-    }
-  )
+const googleOAuthConfigured = Boolean(
+  process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET
 );
+
+if (googleOAuthConfigured) {
+  passport.use(
+    new GoogleStrategy(
+      {
+        clientID: process.env.GOOGLE_CLIENT_ID,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        callbackURL: getGoogleCallbackURL(),
+      },
+      async (accessToken, refreshToken, profile, done) => {
+        try {
+          let user = await User.findOne({ email: profile.emails[0].value });
+
+          if (!user) {
+            user = new User({
+              googleId: profile.id,
+              name: profile.displayName,
+              email: profile.emails[0].value,
+              role: "user",
+              password: "", // Google OAuth users don't have password
+            });
+            await user.save();
+          }
+
+          return done(null, user);
+        } catch (error) {
+          return done(error, null);
+        }
+      }
+    )
+  );
+} else {
+  console.warn("⚠️ Google OAuth is disabled because GOOGLE_CLIENT_ID or GOOGLE_CLIENT_SECRET is missing.");
+}
 
 passport.serializeUser((user, done) => {
   done(null, user.id);
@@ -758,6 +767,7 @@ router.get("/debug/oauth-config", (req, res) => {
   res.json({
     message: "Google OAuth Configuration",
     nodeEnv: process.env.NODE_ENV,
+    googleOAuthConfigured: googleOAuthConfigured ? "✅ Yes" : "❌ No",
     googleClientId: process.env.GOOGLE_CLIENT_ID ? "✅ Set" : "❌ Not set",
     googleClientSecret: process.env.GOOGLE_CLIENT_SECRET ? "✅ Set" : "❌ Not set",
     googleCallbackUrl: getGoogleCallbackURL(),
@@ -771,12 +781,28 @@ router.get("/debug/oauth-config", (req, res) => {
 // ✅ Google OAuth Routes
 router.get(
   "/google",
-  passport.authenticate("google", { scope: ["profile", "email"] })
+  (req, res, next) => {
+    if (!googleOAuthConfigured) {
+      return res.status(503).json({
+        message: "Google OAuth is not configured on this server.",
+      });
+    }
+
+    return passport.authenticate("google", { scope: ["profile", "email"] })(req, res, next);
+  }
 );
 
 router.get(
   "/google/callback",
-  passport.authenticate("google", { failureRedirect: "/login" }),
+  (req, res, next) => {
+    if (!googleOAuthConfigured) {
+      return res.status(503).json({
+        message: "Google OAuth is not configured on this server.",
+      });
+    }
+
+    return passport.authenticate("google", { failureRedirect: "/login" })(req, res, next);
+  },
   (req, res) => {
     try {
       // Create JWT token for the user
