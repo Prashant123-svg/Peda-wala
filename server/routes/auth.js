@@ -56,6 +56,9 @@ const googleOAuthConfigured = Boolean(
 );
 
 if (googleOAuthConfigured) {
+  const maskedClientId = `${process.env.GOOGLE_CLIENT_ID.slice(0, 12)}...`;
+  console.log(`✅ Google OAuth is enabled (client: ${maskedClientId}, callback: ${getGoogleCallbackURL()})`);
+
   passport.use(
     new GoogleStrategy(
       {
@@ -86,7 +89,9 @@ if (googleOAuthConfigured) {
     )
   );
 } else {
-  console.warn("⚠️ Google OAuth is disabled because GOOGLE_CLIENT_ID or GOOGLE_CLIENT_SECRET is missing.");
+  console.warn(
+    `⚠️ Google OAuth is disabled because GOOGLE_CLIENT_ID or GOOGLE_CLIENT_SECRET is missing. Callback would be: ${getGoogleCallbackURL()}`
+  );
 }
 
 passport.serializeUser((user, done) => {
