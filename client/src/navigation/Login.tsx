@@ -79,7 +79,10 @@ const Login = () => {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = `${API_BASE_URL}/auth/google`;
+    // Use the API base URL to get the server URL
+    const serverUrl = API_BASE_URL.replace(/\/api\/?$/i, "");
+    console.log("🔗 Redirecting to Google OAuth at:", `${serverUrl}/auth/google`);
+    window.location.href = `${serverUrl}/auth/google`;
   };
 
   return (
