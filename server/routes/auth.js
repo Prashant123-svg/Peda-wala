@@ -43,12 +43,19 @@ const upload = multer({
 });
 
 // ✅ Google OAuth Configuration
+const getGoogleCallbackURL = () => {
+  if (process.env.NODE_ENV === "production") {
+    return process.env.GOOGLE_CALLBACK_URL || "https://pedhe-backend.onrender.com/auth/google/callback";
+  }
+  return process.env.GOOGLE_CALLBACK_URL || "http://localhost:5000/auth/google/callback";
+};
+
 passport.use(
   new GoogleStrategy(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "https://pedhe-backend.onrender.com/api/auth/google/callback",
+      callbackURL: getGoogleCallbackURL(),
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
@@ -746,6 +753,21 @@ router.delete("/admin/delivery-boy/:deliveryBoyId", authMiddleware, async (req, 
   }
 });
 
+// ✅ Debug: Check Google OAuth configuration
+router.get("/debug/oauth-config", (req, res) => {
+  res.json({
+    message: "Google OAuth Configuration",
+    nodeEnv: process.env.NODE_ENV,
+    googleClientId: process.env.GOOGLE_CLIENT_ID ? "✅ Set" : "❌ Not set",
+    googleClientSecret: process.env.GOOGLE_CLIENT_SECRET ? "✅ Set" : "❌ Not set",
+    googleCallbackUrl: getGoogleCallbackURL(),
+    frontendUrl: process.env.NODE_ENV === "production"
+      ? process.env.FRONTEND_URL || "https://peda-wala.onrender.com"
+      : process.env.FRONTEND_URL || "http://localhost:3000",
+    jwtSecret: process.env.JWT_SECRET ? "✅ Set" : "❌ Not set",
+  });
+});
+
 // ✅ Google OAuth Routes
 router.get(
   "/google",
@@ -764,20 +786,32 @@ router.get(
         { expiresIn: "1d" }
       );
 
+      // Get frontend URL based on environment
+      const frontendURL = process.env.NODE_ENV === "production"
+        ? process.env.FRONTEND_URL || "https://peda-wala.onrender.com"
+        : process.env.FRONTEND_URL || "http://localhost:3000";
+
       // Redirect to frontend with token
-      res.redirect(
-        `https://peda-wala.onrender.com?token=${token}&user=${encodeURIComponent(
-          JSON.stringify({
-            id: req.user._id,
-            name: req.user.name,
-            email: req.user.email,
-            role: req.user.role,
-          })
-        )}`
+      const redirectURL = new URL(frontendURL);
+      redirectURL.searchParams.append("token", token);
+      redirectURL.searchParams.append(
+        "user",
+        JSON.stringify({
+          id: req.user._id,
+          name: req.user.name,
+          email: req.user.email,
+          role: req.user.role,
+        })
       );
+
+      console.log("✅ Google OAuth successful - Redirecting to:", redirectURL.origin);
+      res.redirect(redirectURL.toString());
     } catch (error) {
-      console.error("Google OAuth callback error:", error);
-      res.redirect(`https://peda-wala.onrender.com?error=login_failed`);
+      console.error("❌ Google OAuth callback error:", error);
+      const frontendURL = process.env.NODE_ENV === "production"
+        ? process.env.FRONTEND_URL || "https://peda-wala.onrender.com"
+        : process.env.FRONTEND_URL || "http://localhost:3000";
+      res.redirect(`${frontendURL}?error=login_failed`);
     }
   }
 );

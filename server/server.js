@@ -33,10 +33,14 @@ app.use(express.json());
 // ✅ Passport & Session Configuration
 app.use(
   session({
-    secret: process.env.SESSION_SECRET || "your-secret-key",
+    secret: process.env.SESSION_SECRET || "pedhe-wala-session-secret",
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: process.env.NODE_ENV === "production", httpOnly: true },
+    cookie: { 
+      secure: process.env.NODE_ENV === "production", 
+      httpOnly: true,
+      sameSite: "lax"
+    },
   })
 );
 app.use(passport.initialize());
@@ -50,6 +54,8 @@ connectDB();
 
 // ✅ Routes
 app.use("/api/auth", authRoutes);
+// Support legacy /auth routes (some frontends call /auth/google)
+app.use("/auth", authRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/subscribe", subscriberRoutes); 
 app.use("/api/otp", otpRoutes);
@@ -358,7 +364,7 @@ app.get("/", (req, res) => {
   });
 });
 
-app.get(/^\/(?!api|images|profile-documents|data|products).*/, (req, res, next) => {
+app.get(/^\/(?!api|auth|images|profile-documents|data|products).*/, (req, res, next) => {
   if (req.method !== "GET") {
     return next();
   }
