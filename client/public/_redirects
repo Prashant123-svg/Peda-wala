@@ -1,4 +1,0 @@
-# Redirect all non-static routes to index.html for SPA routing
-/assets/* /assets/:splat 200
-/images/* /images/:splat 200
-/* /index.html 200
