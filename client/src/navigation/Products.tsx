@@ -31,7 +31,33 @@ const Products = () => {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch(`${API_ORIGIN}/products/products.json`);
+        const candidates = [
+          `${API_ORIGIN}/products/products.json`,
+          `${API_ORIGIN}/api/products/products.json`,
+          `${window.location.origin}/products/products.json`,
+          `${window.location.origin}/api/products/products.json`,
+          `https://pedhe-backend.onrender.com/products/products.json`,
+        ];
+
+        let res: Response | null = null;
+        for (const url of candidates) {
+          try {
+            console.log("Trying products URL:", url);
+            const r = await fetch(url);
+            if (r.ok) {
+              res = r;
+              break;
+            }
+            console.warn("Products fetch returned non-ok for", url, r.status);
+          } catch (err) {
+            console.warn("Products fetch failed for", url, err);
+          }
+        }
+
+        if (!res) {
+          throw new Error("Unable to fetch products from any candidate URL");
+        }
+
         const { parseResponse } = await import("../utils/fetchUtils");
         const data = (await parseResponse(res)) || [];
         const normalizedData = data.map((product: Product) => ({
