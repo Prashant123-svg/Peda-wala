@@ -4,16 +4,15 @@ import hero1 from "../assets/hero1.jpg";
 import hero2 from "../assets/hero2.jpg";
 import { BiSolidOffer } from "react-icons/bi";
 import { useCart } from "../context/CartContext";
-import { API_BASE_URL } from "../utils/apiConfig";
+import { API_ORIGIN } from "../utils/apiConfig";
 
-const IMAGE_BASE_URL = API_BASE_URL.replace(/\/api\/?$/, "");
-const fallbackImg = `${IMAGE_BASE_URL}/images/products/pedhe.jpeg`;
+const fallbackImg = `${API_ORIGIN}/images/products/pedhe.jpeg`;
 
 const getImageUrl = (image: string) => {
   const safeImage = image.replace(/\\/g, "/").trim();
   if (safeImage.startsWith("http")) return encodeURI(safeImage);
-  if (safeImage.startsWith("/")) return encodeURI(`${IMAGE_BASE_URL}${safeImage}`);
-  return encodeURI(`${IMAGE_BASE_URL}/${safeImage}`);
+  if (safeImage.startsWith("/")) return encodeURI(`${API_ORIGIN}${safeImage}`);
+  return encodeURI(`${API_ORIGIN}/${safeImage}`);
 };
 
 const handleImageError = (event: React.SyntheticEvent<HTMLImageElement>) => {

@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
-import { API_BASE_URL } from "../utils/apiConfig";
-
-const API_ORIGIN = API_BASE_URL.replace(/\/api\/?$/, "");
+import { API_BASE_URL, API_ORIGIN } from "../utils/apiConfig";
 
 interface Product {
   id: number;
