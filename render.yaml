@@ -42,6 +42,12 @@ services:
       - key: VITE_API_BASE_URL
         value: https://pedhe-backend.onrender.com
     routes:
+      # Serve actual static files (images, CSS, JS, etc) without rewriting
+      - type: static
+        source: /assets
+      - type: static
+        source: /images
+      # Rewrite all other requests to index.html for SPA routing
       - type: rewrite
-        source: /*
+        source: ^(?!.*\.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot|map)$).*$
         destination: /index.html
