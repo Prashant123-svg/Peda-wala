@@ -79,26 +79,34 @@ const Login = () => {
   };
 
   const handleGoogleLogin = async () => {
-    // Use the API base URL to get the server URL
+    // Try configured API endpoint, but fall back to relative `/api` if needed (helps when VITE_API_BASE_URL isn't set)
     const serverUrl = API_BASE_URL.replace(/\/api\/?$/i, "");
+    const candidates = [`${API_BASE_URL}/auth/debug/oauth-config`, `/api/auth/debug/oauth-config`];
 
-    try {
-      const res = await axios.get(`${API_BASE_URL}/auth/debug/oauth-config`);
-      const configured = typeof res.data.googleOAuthConfigured === "string"
-        ? res.data.googleOAuthConfigured.includes("Yes")
-        : Boolean(res.data.googleOAuthConfigured);
+    for (const debugUrl of candidates) {
+      try {
+        const res = await axios.get(debugUrl);
+        const configured = typeof res.data.googleOAuthConfigured === "string"
+          ? res.data.googleOAuthConfigured.includes("Yes")
+          : Boolean(res.data.googleOAuthConfigured);
 
-      if (!configured) {
-        error("⚠️ Google OAuth is not configured on the server.");
+        if (!configured) {
+          error("⚠️ Google OAuth is not configured on the server.");
+          return;
+        }
+
+        // If debugUrl is relative (starts with '/'), use the current origin as server base
+        const base = debugUrl.startsWith('/') ? window.location.origin : serverUrl;
+        console.log("🔗 Redirecting to Google OAuth at:", `${base}/auth/google`);
+        window.location.href = `${base}/auth/google`;
         return;
+      } catch (err: any) {
+        console.warn("OAuth debug check failed for:", debugUrl, err?.message || err);
+        // try next candidate
       }
-
-      console.log("🔗 Redirecting to Google OAuth at:", `${serverUrl}/auth/google`);
-      window.location.href = `${serverUrl}/auth/google`;
-    } catch (err: any) {
-      console.error("Error checking OAuth config:", err);
-      error("Unable to contact server to start Google login.");
     }
+
+    error("Unable to contact server to start Google login.");
   };
 
   return (
