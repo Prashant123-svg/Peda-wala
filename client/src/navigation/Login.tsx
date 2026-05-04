@@ -78,11 +78,27 @@ const Login = () => {
     }
   };
 
-  const handleGoogleLogin = () => {
+  const handleGoogleLogin = async () => {
     // Use the API base URL to get the server URL
     const serverUrl = API_BASE_URL.replace(/\/api\/?$/i, "");
-    console.log("🔗 Redirecting to Google OAuth at:", `${serverUrl}/auth/google`);
-    window.location.href = `${serverUrl}/auth/google`;
+
+    try {
+      const res = await axios.get(`${API_BASE_URL}/auth/debug/oauth-config`);
+      const configured = typeof res.data.googleOAuthConfigured === "string"
+        ? res.data.googleOAuthConfigured.includes("Yes")
+        : Boolean(res.data.googleOAuthConfigured);
+
+      if (!configured) {
+        error("⚠️ Google OAuth is not configured on the server.");
+        return;
+      }
+
+      console.log("🔗 Redirecting to Google OAuth at:", `${serverUrl}/auth/google`);
+      window.location.href = `${serverUrl}/auth/google`;
+    } catch (err: any) {
+      console.error("Error checking OAuth config:", err);
+      error("Unable to contact server to start Google login.");
+    }
   };
 
   return (
