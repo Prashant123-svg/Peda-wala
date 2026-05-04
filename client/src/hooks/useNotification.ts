@@ -59,3 +59,6 @@ export const useNotification = () => {
     info,
   };
 };
+
+// Re-export Notification type for convenience
+export type { Notification };

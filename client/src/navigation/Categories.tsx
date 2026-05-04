@@ -40,7 +40,32 @@ const Categories: React.FC = () => {
 
     (async () => {
       try {
-        const res = await fetch(`${API_BASE_URL}/categories/${file}`);
+        const candidates = [
+          `${API_BASE_URL}/categories/${file}`,
+          `${API_BASE_URL.replace(/\/api$/i, "")}/api/categories/${file}`,
+          `${window.location.origin}/api/categories/${file}`,
+          `https://pedhe-backend.onrender.com/api/categories/${file}`,
+        ];
+
+        let res: Response | null = null;
+        for (const url of candidates) {
+          try {
+            console.log("Trying category URL:", url);
+            const r = await fetch(url);
+            if (r.ok) {
+              res = r;
+              break;
+            }
+            console.warn("Category fetch returned non-ok for", url, r.status);
+          } catch (err) {
+            console.warn("Category fetch failed for", url, err);
+          }
+        }
+
+        if (!res) {
+          throw new Error(`Unable to fetch ${file} from any candidate URL`);
+        }
+
         const { parseResponse } = await import("../utils/fetchUtils");
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = (await parseResponse(res)) || {};
