@@ -29,15 +29,61 @@ import OrderAdminDashboard from "./pages/AdminDashboard";
 import OrderManagement from "./components/OrderManagement";
 import RoleRequestApprovals from "./components/RoleRequestApprovals";
 import { getSubdomainFromHost } from "./utils/subdomainUtils";
+import { useNotificationContext } from "./context/NotificationContext";
+import { useUserContext } from "./context/UserContext";
 
 function AppContent() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { success, error } = useNotificationContext();
+  const { refreshUser } = useUserContext();
   const subdomain = getSubdomainFromHost();
   const userRole = localStorage.getItem("userRole");
   const token = localStorage.getItem("token");
   const isLoginPage = location.pathname === "/login";
   const isSignupPage = location.pathname === "/signup";
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const tokenParam = searchParams.get("token");
+    const userParam = searchParams.get("user");
+    const errorParam = searchParams.get("error");
+
+    if (errorParam) {
+      error(`❌ Google authentication failed: ${errorParam}`);
+      navigate("/", { replace: true });
+      return;
+    }
+
+    if (!tokenParam || !userParam) return;
+
+    void (async () => {
+      try {
+        const user = JSON.parse(decodeURIComponent(userParam));
+
+        localStorage.setItem("token", tokenParam);
+        localStorage.setItem("userId", user.id);
+        localStorage.setItem("userName", user.name);
+        localStorage.setItem("userEmail", user.email);
+        localStorage.setItem("userRole", user.role || "user");
+
+        window.dispatchEvent(
+          new StorageEvent("storage", {
+            key: "token",
+            newValue: tokenParam,
+          })
+        );
+
+        await refreshUser();
+        success("✅ Google login successful!");
+        navigate("/", { replace: true });
+      } catch (err) {
+        console.error("❌ Failed to process OAuth callback:", err);
+        error("❌ Failed to process Google login. Please try again.");
+        navigate("/", { replace: true });
+      }
+    })();
+  }, [location.search, navigate, refreshUser, success, error]);
 
   // Check subdomain on mount and route accordingly
   useEffect(() => {

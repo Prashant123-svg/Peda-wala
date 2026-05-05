@@ -905,7 +905,7 @@ router.get(
   async (req, res) => {
     try {
       const oauthFlow = req.session?.googleOAuthFlow === "signup" ? "signup" : "login";
-      const authPath = oauthFlow === "signup" ? "/signup" : "/login";
+      const authPath = "/";
 
       // Ensure we have the user from passport
       if (!req.user) {
@@ -989,7 +989,7 @@ router.get(
         ? process.env.FRONTEND_URL || "https://peda-wala.onrender.com"
         : process.env.FRONTEND_URL || "http://localhost:3000";
       const oauthFlow = req.session?.googleOAuthFlow === "signup" ? "signup" : "login";
-      const authPath = oauthFlow === "signup" ? "/signup" : "/login";
+      const authPath = "/";
       const errorURL = new URL(frontendURL);
       errorURL.pathname = authPath;
       errorURL.searchParams.set("error", "login_failed");
