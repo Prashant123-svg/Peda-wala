@@ -2,6 +2,7 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useNotificationContext } from "../context/NotificationContext";
+import { useUserContext } from "../context/UserContext";
 import { API_BASE_URL } from "../utils/apiConfig";
 
 const Login = () => {
@@ -11,6 +12,7 @@ const Login = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { success, error } = useNotificationContext();
+  const { refreshUser } = useUserContext();
 
   // Handle Google OAuth callback
   useEffect(() => {
@@ -27,50 +29,46 @@ const Login = () => {
     }
 
     if (token && userParam) {
-      try {
-        console.log("📝 Raw user param:", userParam);
-        const user = JSON.parse(decodeURIComponent(userParam));
-        
-        console.log("✅ Parsed user data:", user);
-        console.log("💾 Saving to localStorage...");
-        
-        // Save all user data to localStorage
-        localStorage.setItem("token", token);
-        localStorage.setItem("userId", user.id);
-        localStorage.setItem("userName", user.name);
-        localStorage.setItem("userEmail", user.email);
-        localStorage.setItem("userRole", user.role || "user");
+      void (async () => {
+        try {
+          console.log("📝 Raw user param:", userParam);
+          const user = JSON.parse(decodeURIComponent(userParam));
 
-        console.log("✅ Data saved to localStorage");
-        console.log("📋 Saved user data:", {
-          userId: user.id,
-          userName: user.name,
-          userEmail: user.email,
-          userRole: user.role || "user"
-        });
-        
-        // Dispatch storage event to notify other tabs and listeners
-        window.dispatchEvent(new StorageEvent('storage', {
-          key: 'token',
-          newValue: token,
-          oldValue: null,
-          storageArea: localStorage
-        }));
+          console.log("✅ Parsed user data:", user);
+          console.log("💾 Saving to localStorage...");
 
-        console.log("✅ Google login successful for:", user.email);
-        success("✅ Google login successful! Welcome back to Peda-Wale!");
-        
-        // Clear URL params and redirect with a small delay to ensure state updates
-        setTimeout(() => {
-          console.log("🔄 Redirecting to home page...");
-          window.history.replaceState({}, document.title, window.location.pathname);
-          navigate("/", { replace: true });
-        }, 500);
-      } catch (err) {
-        console.error("❌ Error parsing user data:", err);
-        console.error("❌ userParam value:", userParam);
-        error("❌ Failed to process login data. Please try again.");
-      }
+          // Save all user data to localStorage
+          localStorage.setItem("token", token);
+          localStorage.setItem("userId", user.id);
+          localStorage.setItem("userName", user.name);
+          localStorage.setItem("userEmail", user.email);
+          localStorage.setItem("userRole", user.role || "user");
+
+          console.log("✅ Data saved to localStorage");
+          console.log("📋 Saved user data:", {
+            userId: user.id,
+            userName: user.name,
+            userEmail: user.email,
+            userRole: user.role || "user"
+          });
+
+          await refreshUser();
+
+          console.log("✅ Google login successful for:", user.email);
+          success("✅ Google login successful! Welcome back to Peda-Wale!");
+
+          // Clear URL params and redirect with a small delay to ensure state updates
+          setTimeout(() => {
+            console.log("🔄 Redirecting to home page...");
+            window.history.replaceState({}, document.title, window.location.pathname);
+            navigate("/", { replace: true });
+          }, 500);
+        } catch (err) {
+          console.error("❌ Error parsing user data:", err);
+          console.error("❌ userParam value:", userParam);
+          error("❌ Failed to process login data. Please try again.");
+        }
+      })();
     }
   }, [searchParams, navigate, success, error]);
 
@@ -135,7 +133,7 @@ const Login = () => {
   };
 
   return (
-    <div className="login-page min-h-screen w-full bg-gradient-to-br from-amber-50 via-white to-yellow-100 px-4 py-10 sm:px-6 lg:px-8 flex items-center justify-center">
+    <div className="login-page min-h-screen w-full bg-linear-to-br from-amber-50 via-white to-yellow-100 px-4 py-10 sm:px-6 lg:px-8 flex items-center justify-center">
       <div className="w-full max-w-md rounded-2xl border border-yellow-200 bg-white shadow-xl p-5 sm:p-7">
         <div className="text-center mb-6">
           <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1">Welcome Back</h2>
