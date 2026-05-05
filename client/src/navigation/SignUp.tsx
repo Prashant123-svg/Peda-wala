@@ -110,8 +110,8 @@ const handleGoogleSignup = async () => {
     }
 
     console.log("✅ Google OAuth is configured");
-    console.log("🔗 Redirecting to Google OAuth at:", `${serverUrl}/auth/google`);
-    window.location.href = `${serverUrl}/auth/google`;
+    console.log("🔗 Redirecting to Google OAuth at:", `${serverUrl}/auth/google?flow=signup`);
+    window.location.href = `${serverUrl}/auth/google?flow=signup`;
   } catch (err: any) {
     console.error("❌ Error checking OAuth config:", err);
     error("❌ Unable to contact server to start Google signup.");
