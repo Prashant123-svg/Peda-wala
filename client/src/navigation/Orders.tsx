@@ -96,6 +96,15 @@ const Orders: React.FC = () => {
   const userRole = localStorage.getItem("userRole");
   const isAdmin = contextIsAdmin === true || userRole === "admin";
 
+  // ✅ Protect Orders page - require login
+  useEffect(() => {
+    const token = localStorage.getItem("authToken") || localStorage.getItem("token");
+    if (!token) {
+      alert("Please login to access orders 🔐");
+      navigate("/login", { replace: true, state: { from: "/orders" } });
+    }
+  }, [navigate]);
+
   useEffect(() => {
     console.log(`📦 Orders Debug - ContextIsAdmin: ${contextIsAdmin}, UserRole: ${userRole}, FinalIsAdmin: ${isAdmin}`);
   }, [contextIsAdmin, userRole, isAdmin]);

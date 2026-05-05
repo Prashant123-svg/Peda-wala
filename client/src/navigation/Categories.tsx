@@ -184,39 +184,48 @@ const Categories: React.FC = () => {
                       </span>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-2 mt-auto pt-3">
+                    <div className="flex flex-col gap-2 mt-auto pt-3">
                       <button
-                        className="bg-yellow-400 hover:bg-yellow-500 text-gray-900 text-xs sm:text-sm font-semibold py-1.5 rounded-lg transition"
-                        onClick={() =>
-                          addToCart({
-                            id: p.id,
-                            name: p.name,
-                            price: p.price,
-                            image: getImageUrl(p.image),
-                            qty: 1,
-                            variant: "250g", // ✅ Default weight variant
-                          })
-                        }
+                        className="w-full bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-semibold py-1.5 rounded-lg transition"
+                        onClick={() => setSelectedProduct(p)}
                       >
-                        Add
+                        👁️ View Details
                       </button>
 
-                      <button
-                        className="bg-green-500 hover:bg-green-600 text-white text-xs sm:text-sm font-semibold py-1.5 rounded-lg transition"
-                        onClick={() => {
-                          const token = localStorage.getItem("token");
-                          if (!token) {
-                            alert("Please login first to buy products! 🔐");
-                            navigate("/login", { state: { from: "/categories" } });
-                            return;
+                      <div className="grid grid-cols-2 gap-2">
+                        <button
+                          className="bg-yellow-400 hover:bg-yellow-500 text-gray-900 text-xs sm:text-sm font-semibold py-1.5 rounded-lg transition"
+                          onClick={() =>
+                            addToCart({
+                              id: p.id,
+                              name: p.name,
+                              price: p.price,
+                              image: getImageUrl(p.image),
+                              qty: 1,
+                              variant: "250g", // ✅ Default weight variant
+                            })
                           }
-                          navigate("/checkout", {
-                            state: { cart: [{ ...p, qty: 1 }] },
-                          });
-                        }}
-                      >
-                        Buy
-                      </button>
+                        >
+                          Add
+                        </button>
+
+                        <button
+                          className="bg-green-500 hover:bg-green-600 text-white text-xs sm:text-sm font-semibold py-1.5 rounded-lg transition"
+                          onClick={() => {
+                            const token = localStorage.getItem("token");
+                            if (!token) {
+                              alert("Please login first to buy products! 🔐");
+                              navigate("/login", { state: { from: "/categories" } });
+                              return;
+                            }
+                            navigate("/checkout", {
+                              state: { cart: [{ ...p, qty: 1 }] },
+                            });
+                          }}
+                        >
+                          Buy
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
