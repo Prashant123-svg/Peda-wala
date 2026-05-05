@@ -42,16 +42,13 @@ const Header = () => {
   }, []);
 
   const handleLogout = () => {
-    const userId = localStorage.getItem("userId");
+    // Clear auth tokens but preserve cart for when user logs back in
     localStorage.removeItem("token");
-    localStorage.removeItem("userId"); // ✅ Clear user-specific data
+    localStorage.removeItem("userId");
     localStorage.removeItem("userName");
     localStorage.removeItem("userEmail");
     localStorage.removeItem("userRole");
-    // ✅ Clear user's cart from localStorage
-    if (userId) {
-      localStorage.removeItem(`pedhewala_cart_${userId}`);
-    }
+    // ✅ KEEP cart in localStorage so it's available when user logs back in
     navigate("/Login");
   };
 
