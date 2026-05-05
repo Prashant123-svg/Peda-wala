@@ -74,8 +74,14 @@ function AppContent() {
             <Route path="/category/:name" element={<CategoryDetail />} />
             <Route path="/categories" element={<Categories />} />
             <Route path="/products" element={<Products />} />
-            <Route path="/orders" element={<Orders />} />
-            <Route path="/orders/:orderId" element={<OrderDetails />} />
+            <Route
+              path="/orders"
+              element={token ? <Orders /> : <Navigate to="/login" replace state={{ from: location.pathname }} />}
+            />
+            <Route
+              path="/orders/:orderId"
+              element={token ? <OrderDetails /> : <Navigate to="/login" replace state={{ from: location.pathname }} />}
+            />
             <Route
               path="/profile"
               element={token ? <Profile /> : <Navigate to="/login" replace state={{ from: location.pathname }} />}
