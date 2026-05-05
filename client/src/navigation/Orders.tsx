@@ -3,6 +3,7 @@ import { useCart } from "../context/CartContext";
 import { useUserContext } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../utils/apiConfig";
+import Swal from "sweetalert2";
 
 const INDIAN_STATES = [
   "Select a state",
@@ -171,7 +172,12 @@ const Orders: React.FC = () => {
     const token = localStorage.getItem("authToken") || localStorage.getItem("token");
     
     if (!token) {
-      alert("🔐 Please login first to place an order!");
+      Swal.fire({
+        icon: "warning",
+        title: "Login Required",
+        text: "Please login first to place an order!",
+        confirmButtonColor: "#3085d6"
+      });
       navigate("/login", { state: { from: "/orders" } });
       return;
     }
@@ -248,7 +254,12 @@ const Orders: React.FC = () => {
       setAddress({ name: "", phone: "", street: "", state: "", city: "", pincode: "" });
       setShowForm(false);
       
-      alert("✅ Order placed successfully!");
+      Swal.fire({
+        icon: "success",
+        title: "Order Placed!",
+        text: "Your order has been placed successfully!",
+        confirmButtonColor: "#10b981"
+      });
       await fetchOrders();
     } catch (err: any) {
       console.error("Error placing order:", err);
@@ -301,7 +312,12 @@ const Orders: React.FC = () => {
 
       // Refresh orders
       await fetchOrders();
-      alert("✅ Order status updated successfully!");
+      Swal.fire({
+        icon: "success",
+        title: "Updated!",
+        text: "Order status updated successfully!",
+        confirmButtonColor: "#10b981"
+      });
     } catch (err: any) {
       console.error("Error updating order status:", err);
       setError(err.message || "Failed to update order status");
@@ -620,7 +636,12 @@ const Orders: React.FC = () => {
                     onClick={() => {
                       const token = localStorage.getItem("authToken") || localStorage.getItem("token");
                       if (!token) {
-                        alert("🔐 Please login first to checkout your order!");
+                        Swal.fire({
+                          icon: "warning",
+                          title: "Login Required",
+                          text: "Please login first to checkout your order!",
+                          confirmButtonColor: "#3085d6"
+                        });
                         navigate("/login", { state: { from: "/orders" } });
                         return;
                       }
