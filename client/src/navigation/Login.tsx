@@ -191,9 +191,11 @@ const Login = () => {
             onClick={handleGoogleLogin}
             className="w-full mt-4 rounded-xl border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 font-semibold px-4 py-2.5 sm:py-3 transition flex items-center justify-center gap-2"
           >
-            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="12" cy="12" r="11" stroke="#4285F4" strokeWidth="1.5" fill="white"/>
-              <path d="M7.5 12C7.5 14.49 9.17 16.59 11.52 17.23V14.71H10.07V12H11.52V10.6C11.52 9.17 12.28 8.5 13.5 8.5C14.09 8.5 14.71 8.62 15.05 8.72V11H14.19C13.65 11 13.5 11.32 13.5 11.75V12H15V14.71H13.5V17.25C15.86 16.62 17.5 14.5 17.5 12C17.5 9.24 15.26 7 12.5 7C9.74 7 7.5 9.24 7.5 12Z" fill="#4285F4"/>
+            <svg className="h-5 w-5" viewBox="0 0 24 24" aria-hidden="true">
+              <path fill="#EA4335" d="M12 10.2v3.9h5.5c-.2 1.3-1.6 3.8-5.5 3.8-3.3 0-6-2.7-6-6s2.7-6 6-6c1.9 0 3.2.8 4 1.5l2.7-2.6C16.7 3.2 14.6 2.3 12 2.3 6.9 2.3 2.7 6.5 2.7 11.6S6.9 20.9 12 20.9c5.8 0 9.7-4 9.7-9.6 0-.7-.1-1.2-.2-1.7H12Z" />
+              <path fill="#FBBC05" d="M3.6 7.3 6.9 9.7C7.8 7.8 9.8 6.5 12 6.5c1.9 0 3.2.8 4 1.5l2.7-2.6C16.7 3.2 14.6 2.3 12 2.3 8.3 2.3 5.1 4.4 3.6 7.3Z" />
+              <path fill="#34A853" d="M12 20.9c2.5 0 4.6-.8 6.1-2.2l-3-2.4c-.8.5-1.9 1.1-3.1 1.1-2.3 0-4.3-1.3-5.1-3.1l-3.3 2.5C5.1 18.8 8.3 20.9 12 20.9Z" />
+              <path fill="#4285F4" d="M21.7 11.6c0-.7-.1-1.2-.2-1.7H12v3.9h5.5c-.3 1.3-1.1 2.4-2.4 3.1l3 2.4c1.7-1.6 2.6-4 2.6-7.7Z" />
             </svg>
             Login with Google
           </button>
