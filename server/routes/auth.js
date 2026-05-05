@@ -68,26 +68,47 @@ if (googleOAuthConfigured) {
       },
       async (accessToken, refreshToken, profile, done) => {
         try {
-          const email = profile.emails[0].value;
+          const email = profile.emails[0]?.value?.toLowerCase();
+          
+          if (!email) {
+            console.error(`❌ Google OAuth: No email found in profile`);
+            return done(new Error("No email provided by Google"), null);
+          }
+          
           console.log(`🔍 Google OAuth: Checking for user with email: ${email}`);
           
-          let user = await User.findOne({ email });
+          // Find by lowercase email to avoid duplicates
+          let user = await User.findOne({ email: email.toLowerCase() });
 
           if (!user) {
             console.log(`➕ Google OAuth: Creating new user for ${email}`);
             user = new User({
               googleId: profile.id,
-              name: profile.displayName,
-              email: email,
+              name: profile.displayName || "Google User",
+              email: email.toLowerCase(), // Always store as lowercase
               role: "user",
+              avatar: profile.photos?.[0]?.value || null,
               // password field is NOT set - will be undefined for Google OAuth users
             });
             
-            const savedUser = await user.save();
-            console.log(`✅ Google OAuth: User saved successfully! ID: ${savedUser._id}, Email: ${savedUser.email}`);
-            return done(null, savedUser);
+            await user.save();
+            console.log(`✅ Google OAuth: User saved successfully!`);
+            console.log(`   - ID: ${user._id}`);
+            console.log(`   - Email: ${user.email}`);
+            console.log(`   - GoogleId: ${user.googleId}`);
+            
+            // Fetch fresh user from database to ensure all fields are populated
+            const freshUser = await User.findById(user._id);
+            if (!freshUser) {
+              console.error(`❌ Google OAuth: Failed to retrieve saved user from database`);
+              return done(new Error("Failed to save user"), null);
+            }
+            
+            return done(null, freshUser);
           } else {
-            console.log(`✅ Google OAuth: Existing user found! ID: ${user._id}, Email: ${user.email}`);
+            console.log(`✅ Google OAuth: Existing user found!`);
+            console.log(`   - ID: ${user._id}`);
+            console.log(`   - Email: ${user.email}`);
             
             // Update googleId if not already set
             if (!user.googleId) {
@@ -98,10 +119,16 @@ if (googleOAuthConfigured) {
             
             // Return the user with all data populated
             const updatedUser = await User.findById(user._id);
+            if (!updatedUser) {
+              console.error(`❌ Google OAuth: Failed to retrieve user from database`);
+              return done(new Error("User not found in database"), null);
+            }
+            
             return done(null, updatedUser);
           }
         } catch (error) {
-          console.error(`❌ Google OAuth Strategy Error:`, error);
+          console.error(`❌ Google OAuth Strategy Error:`, error.message);
+          console.error(`   Stack:`, error.stack);
           return done(error, null);
         }
       }
@@ -126,10 +153,10 @@ passport.deserializeUser(async (id, done) => {
       console.error(`❌ User not found during deserialization for ID: ${id}`);
       return done(null, false);
     }
-    console.log(`✅ User deserialized successfully: ${user.email}`);
+    console.log(`✅ User deserialized successfully: ${user.email} (ID: ${user._id})`);
     done(null, user);
   } catch (error) {
-    console.error(`❌ Deserialization error:`, error);
+    console.error(`❌ Deserialization error:`, error.message);
     done(error, null);
   }
 });
@@ -169,21 +196,28 @@ router.post("/signup", async (req, res) => {
   try {
     const { name, email, password, shopName, shopDescription, businessType } = req.body;
 
+    if (!name || !email || !password) {
+      return res.status(400).json({ message: "Name, email, and password are required" });
+    }
+
+    // Use lowercase email for consistency
+    const normalizedEmail = email.toLowerCase();
+
     // Check existing user
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ email: normalizedEmail });
     if (existingUser) return res.status(400).json({ message: "User already exists, Please login" });
 
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Check if email and password match admin credentials
-    const isAdmin = email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD;
+    const isAdmin = normalizedEmail === process.env.ADMIN_EMAIL?.toLowerCase() && password === process.env.ADMIN_PASSWORD;
     const userRole = isAdmin ? "admin" : "user";
 
     // Create user with appropriate role and admin details if admin
     const newUser = new User({ 
       name, 
-      email, 
+      email: normalizedEmail, 
       password: hashedPassword, 
       role: userRole,
       ...(isAdmin && { 
@@ -194,6 +228,8 @@ router.post("/signup", async (req, res) => {
     });
     
     await newUser.save();
+
+    console.log(`✅ New user signed up: ${normalizedEmail} (ID: ${newUser._id}, Role: ${userRole})`);
 
     res.json({ 
       message: isAdmin ? "✅ Admin account created successfully!" : "✅ Signup successful",
@@ -206,6 +242,7 @@ router.post("/signup", async (req, res) => {
       }
     });
   } catch (err) {
+    console.error(`❌ Signup error:`, err.message);
     res.status(500).json({ message: err.message });
   }
 });
@@ -215,24 +252,46 @@ router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Find user
-    const user = await User.findOne({ email });
+    if (!email || !password) {
+      return res.status(400).json({ message: "Email and password are required" });
+    }
+
+    // Find user - use lowercase email for consistency
+    const user = await User.findOne({ email: email.toLowerCase() });
     if (!user) return res.status(400).json({ message: "❌ Email not registered. Please sign up first!" });
 
     // Check if user registered with Google OAuth
     if (user.googleId && !user.password) {
-      return res.status(400).json({ message: "❌ This account was registered with Google. Please login with Google instead!" });
+      return res.status(400).json({ 
+        message: "❌ This account was registered with Google. Please login with Google instead!",
+        hint: "Use the 'Login with Google' button"
+      });
     }
 
-    // Check password
+    // Check password exists and is valid
+    if (!user.password) {
+      return res.status(400).json({ message: "❌ Invalid credentials" });
+    }
+
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ message: "❌ Incorrect password. Please try again!" });
 
     // Create JWT token (include role!)
     const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: "1d" });
 
-    res.json({ token, user: { id: user._id, name: user.name, email: user.email, role: user.role || "user" } });
+    console.log(`✅ User logged in: ${user.email} (ID: ${user._id}, Role: ${user.role})`);
+    
+    res.json({ 
+      token, 
+      user: { 
+        id: user._id, 
+        name: user.name, 
+        email: user.email, 
+        role: user.role || "user" 
+      } 
+    });
   } catch (err) {
+    console.error(`❌ Login error:`, err.message);
     res.status(500).json({ message: err.message });
   }
 });
@@ -884,21 +943,23 @@ router.get(
 
       // Prepare user data object
       const userData = {
-        id: freshUser._id,
+        id: freshUser._id.toString(),
         name: freshUser.name,
         email: freshUser.email,
-        role: freshUser.role,
+        role: freshUser.role || "user",
       };
 
       console.log(`📦 Preparing redirect with:`, {
         token: token.substring(0, 20) + "...",
-        userDataString: JSON.stringify(userData)
+        userEmail: userData.email,
+        userId: userData.id,
+        userRole: userData.role
       });
 
       // Redirect to frontend with token and user data
       const redirectURL = new URL(frontendURL);
       redirectURL.searchParams.append("token", token);
-      redirectURL.searchParams.append("user", JSON.stringify(userData));
+      redirectURL.searchParams.append("user", encodeURIComponent(JSON.stringify(userData)));
 
       const finalURL = redirectURL.toString();
       console.log(`🔗 Final redirect URL (without params): ${redirectURL.origin}${redirectURL.pathname}?token=[TOKEN]&user=[USER_DATA]`);
@@ -914,5 +975,43 @@ router.get(
     }
   }
 );
+
+// ✅ Verify user exists in database by email (for debugging OAuth)
+router.get("/verify-user/:email", async (req, res) => {
+  try {
+    const email = req.params.email.toLowerCase();
+    console.log(`🔍 Verifying user with email: ${email}`);
+    
+    const user = await User.findOne({ email });
+    
+    if (!user) {
+      console.log(`❌ User not found in database`);
+      return res.status(404).json({ 
+        found: false,
+        email: email,
+        message: "User not found in database" 
+      });
+    }
+    
+    console.log(`✅ User found in database`);
+    res.json({
+      found: true,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        googleId: user.googleId ? "✅ Set" : "❌ Not set",
+        role: user.role,
+        hasPassword: user.password ? "✅ Set" : "❌ Not set (Google OAuth user)"
+      }
+    });
+  } catch (error) {
+    console.error(`❌ Error verifying user:`, error.message);
+    res.status(500).json({ 
+      error: error.message,
+      email: req.params.email 
+    });
+  }
+});
 
 export default router;
