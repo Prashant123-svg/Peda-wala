@@ -192,6 +192,11 @@ router.post("/login", async (req, res) => {
     const user = await User.findOne({ email });
     if (!user) return res.status(400).json({ message: "❌ Email not registered. Please sign up first!" });
 
+    // Check if user registered with Google OAuth
+    if (user.googleId && !user.password) {
+      return res.status(400).json({ message: "❌ This account was registered with Google. Please login with Google instead!" });
+    }
+
     // Check password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ message: "❌ Incorrect password. Please try again!" });
