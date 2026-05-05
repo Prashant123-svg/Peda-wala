@@ -882,21 +882,29 @@ router.get(
         ? process.env.FRONTEND_URL || "https://peda-wala.onrender.com"
         : process.env.FRONTEND_URL || "http://localhost:3000";
 
+      // Prepare user data object
+      const userData = {
+        id: freshUser._id,
+        name: freshUser.name,
+        email: freshUser.email,
+        role: freshUser.role,
+      };
+
+      console.log(`📦 Preparing redirect with:`, {
+        token: token.substring(0, 20) + "...",
+        userDataString: JSON.stringify(userData)
+      });
+
       // Redirect to frontend with token and user data
       const redirectURL = new URL(frontendURL);
       redirectURL.searchParams.append("token", token);
-      redirectURL.searchParams.append(
-        "user",
-        JSON.stringify({
-          id: freshUser._id,
-          name: freshUser.name,
-          email: freshUser.email,
-          role: freshUser.role,
-        })
-      );
+      redirectURL.searchParams.append("user", JSON.stringify(userData));
 
-      console.log(`✅ Google OAuth successful - Redirecting to: ${redirectURL.origin}`);
-      res.redirect(redirectURL.toString());
+      const finalURL = redirectURL.toString();
+      console.log(`🔗 Final redirect URL (without params): ${redirectURL.origin}${redirectURL.pathname}?token=[TOKEN]&user=[USER_DATA]`);
+      console.log(`✅ Google OAuth successful - Redirecting to frontend`);
+      
+      res.redirect(finalURL);
     } catch (error) {
       console.error(`❌ Google OAuth callback error:`, error);
       const frontendURL = process.env.NODE_ENV === "production"

@@ -163,7 +163,7 @@ const Categories: React.FC = () => {
                   className="bg-white rounded-xl shadow-sm hover:shadow-xl border border-gray-200 transition group flex flex-col overflow-hidden cursor-pointer"
                   onClick={() => setSelectedProduct(p)}
                 >
-                  <div className="w-full h-80 overflow-hidden bg-gray-100">
+                  <div className="w-full h-44 overflow-hidden bg-gray-100">
                     <img
                       src={getImageUrl(p.image)}
                       onError={(e) => (e.currentTarget.src = FALLBACK_IMAGE_URL)}

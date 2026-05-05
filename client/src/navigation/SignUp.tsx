@@ -19,14 +19,21 @@ const Signup = () => {
     const userParam = searchParams.get("user");
     const errorParam = searchParams.get("error");
 
+    console.log("🔍 SignUp callback check - Token:", !!token, "User param:", !!userParam, "Error param:", errorParam);
+
     if (errorParam) {
-      error("❌ Google signup failed. Please try again.");
+      console.error("❌ Google OAuth error:", errorParam);
+      error(`❌ Google signup failed: ${errorParam}`);
       return;
     }
 
     if (token && userParam) {
       try {
+        console.log("📝 Raw user param:", userParam);
         const user = JSON.parse(decodeURIComponent(userParam));
+        
+        console.log("✅ Parsed user data:", user);
+        console.log("💾 Saving to localStorage...");
         
         localStorage.setItem("token", token);
         localStorage.setItem("userId", user.id);
@@ -34,15 +41,20 @@ const Signup = () => {
         localStorage.setItem("userEmail", user.email);
         localStorage.setItem("userRole", user.role || "user");
 
-        console.log("✅ Google signup successful:", user);
-        success("✅ Google signup successful!");
+        console.log("✅ Data saved to localStorage");
+        console.log("✅ Google signup successful for:", user.email);
+        success("✅ Google signup successful! Welcome to Peda-Wale!");
         
+        // Clear URL params and redirect
         setTimeout(() => {
+          console.log("🔄 Redirecting to home page...");
+          window.history.replaceState({}, document.title, window.location.pathname);
           navigate("/", { replace: true });
-        }, 500);
+        }, 800);
       } catch (err) {
-        console.error("Error parsing user data:", err);
-        error("❌ Signup failed. Please try again.");
+        console.error("❌ Error parsing user data:", err);
+        console.error("❌ userParam value:", userParam);
+        error("❌ Failed to process signup data. Please try again.");
       }
     }
   }, [searchParams, navigate, success, error]);
@@ -69,21 +81,26 @@ const handleGoogleSignup = async () => {
   const serverUrl = API_BASE_URL.replace(/\/api\/?$/i, "");
 
   try {
+    console.log("🔄 Checking Google OAuth configuration...");
     const res = await axios.get(`${API_BASE_URL}/auth/debug/oauth-config`);
+    console.log("📋 OAuth config response:", res.data);
+    
     const configured = typeof res.data.googleOAuthConfigured === "string"
       ? res.data.googleOAuthConfigured.includes("Yes")
       : Boolean(res.data.googleOAuthConfigured);
 
     if (!configured) {
+      console.error("❌ Google OAuth not configured");
       error("⚠️ Google OAuth is not configured on the server.");
       return;
     }
 
+    console.log("✅ Google OAuth is configured");
     console.log("🔗 Redirecting to Google OAuth at:", `${serverUrl}/auth/google`);
     window.location.href = `${serverUrl}/auth/google`;
   } catch (err: any) {
-    console.error("Error checking OAuth config:", err);
-    error("Unable to contact server to start Google signup.");
+    console.error("❌ Error checking OAuth config:", err);
+    error("❌ Unable to contact server to start Google signup.");
   }
 };
 

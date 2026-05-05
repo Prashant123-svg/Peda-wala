@@ -18,14 +18,21 @@ const Login = () => {
     const userParam = searchParams.get("user");
     const errorParam = searchParams.get("error");
 
+    console.log("🔍 Login callback check - Token:", !!token, "User param:", !!userParam, "Error param:", errorParam);
+
     if (errorParam) {
-      error("❌ Google login failed. Please try again.");
+      console.error("❌ Google OAuth error:", errorParam);
+      error(`❌ Google login failed: ${errorParam}`);
       return;
     }
 
     if (token && userParam) {
       try {
+        console.log("📝 Raw user param:", userParam);
         const user = JSON.parse(decodeURIComponent(userParam));
+        
+        console.log("✅ Parsed user data:", user);
+        console.log("💾 Saving to localStorage...");
         
         localStorage.setItem("token", token);
         localStorage.setItem("userId", user.id);
@@ -33,15 +40,20 @@ const Login = () => {
         localStorage.setItem("userEmail", user.email);
         localStorage.setItem("userRole", user.role || "user");
 
-        console.log("✅ Google login successful:", user);
-        success("✅ Google login successful!");
+        console.log("✅ Data saved to localStorage");
+        console.log("✅ Google login successful for:", user.email);
+        success("✅ Google login successful! Welcome back to Peda-Wale!");
         
+        // Clear URL params and redirect
         setTimeout(() => {
+          console.log("🔄 Redirecting to home page...");
+          window.history.replaceState({}, document.title, window.location.pathname);
           navigate("/", { replace: true });
-        }, 500);
+        }, 800);
       } catch (err) {
-        console.error("Error parsing user data:", err);
-        error("❌ Login failed. Please try again.");
+        console.error("❌ Error parsing user data:", err);
+        console.error("❌ userParam value:", userParam);
+        error("❌ Failed to process login data. Please try again.");
       }
     }
   }, [searchParams, navigate, success, error]);
@@ -83,21 +95,26 @@ const Login = () => {
     const serverUrl = API_BASE_URL.replace(/\/api\/?$/i, "");
 
     try {
+      console.log("🔄 Checking Google OAuth configuration...");
       const res = await axios.get(`${API_BASE_URL}/auth/debug/oauth-config`);
+      console.log("📋 OAuth config response:", res.data);
+      
       const configured = typeof res.data.googleOAuthConfigured === "string"
         ? res.data.googleOAuthConfigured.includes("Yes")
         : Boolean(res.data.googleOAuthConfigured);
 
       if (!configured) {
+        console.error("❌ Google OAuth not configured");
         error("⚠️ Google OAuth is not configured on the server.");
         return;
       }
 
+      console.log("✅ Google OAuth is configured");
       console.log("🔗 Redirecting to Google OAuth at:", `${serverUrl}/auth/google`);
       window.location.href = `${serverUrl}/auth/google`;
     } catch (err: any) {
-      console.error("Error checking OAuth config:", err);
-      error("Unable to contact server to start Google login.");
+      console.error("❌ Error checking OAuth config:", err);
+      error("❌ Unable to contact server to start Google login.");
     }
   };
 
