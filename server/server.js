@@ -30,6 +30,24 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Temporary OAuth debug logger - remove after debugging
+app.use((req, res, next) => {
+  try {
+    const watchPaths = ['/', '/auth/google/callback', '/auth/google'];
+    if (watchPaths.includes(req.path) || req.path.startsWith('/auth/google')) {
+      console.log('🛠️ OAuth Debug Request:', {
+        method: req.method,
+        path: req.path,
+        originalUrl: req.originalUrl,
+        query: req.query,
+      });
+    }
+  } catch (err) {
+    console.error('Error in OAuth debug logger:', err);
+  }
+  next();
+});
+
 // ✅ Passport & Session Configuration
 app.use(
   session({
