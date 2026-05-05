@@ -884,7 +884,10 @@ router.get(
       });
     }
 
-    return passport.authenticate("google", { scope: ["profile", "email"] })(req, res, next);
+    req.session.googleOAuthFlow = req.query.flow === "signup" ? "signup" : "login";
+    req.session.save(() => {
+      return passport.authenticate("google", { scope: ["profile", "email"] })(req, res, next);
+    });
   }
 );
 
@@ -901,13 +904,19 @@ router.get(
   },
   async (req, res) => {
     try {
+      const oauthFlow = req.session?.googleOAuthFlow === "signup" ? "signup" : "login";
+      const authPath = oauthFlow === "signup" ? "/signup" : "/login";
+
       // Ensure we have the user from passport
       if (!req.user) {
         console.error(`❌ No user found in request after authentication`);
         const frontendURL = process.env.NODE_ENV === "production"
           ? process.env.FRONTEND_URL || "https://peda-wala.onrender.com"
           : process.env.FRONTEND_URL || "http://localhost:3000";
-        return res.redirect(`${frontendURL}?error=no_user`);
+        const errorURL = new URL(frontendURL);
+        errorURL.pathname = authPath;
+        errorURL.searchParams.set("error", "no_user");
+        return res.redirect(errorURL.toString());
       }
 
       // Fetch fresh user data from database to ensure we have all fields
@@ -917,7 +926,10 @@ router.get(
         const frontendURL = process.env.NODE_ENV === "production"
           ? process.env.FRONTEND_URL || "https://peda-wala.onrender.com"
           : process.env.FRONTEND_URL || "http://localhost:3000";
-        return res.redirect(`${frontendURL}?error=user_not_found`);
+        const errorURL = new URL(frontendURL);
+        errorURL.pathname = authPath;
+        errorURL.searchParams.set("error", "user_not_found");
+        return res.redirect(errorURL.toString());
       }
 
       console.log(`✅ Google OAuth Callback - User authenticated successfully!`);
@@ -958,12 +970,17 @@ router.get(
 
       // Redirect to frontend with token and user data
       const redirectURL = new URL(frontendURL);
+      redirectURL.pathname = authPath;
       redirectURL.searchParams.append("token", token);
       redirectURL.searchParams.append("user", encodeURIComponent(JSON.stringify(userData)));
 
       const finalURL = redirectURL.toString();
       console.log(`🔗 Final redirect URL (without params): ${redirectURL.origin}${redirectURL.pathname}?token=[TOKEN]&user=[USER_DATA]`);
       console.log(`✅ Google OAuth successful - Redirecting to frontend`);
+
+      if (req.session) {
+        req.session.googleOAuthFlow = undefined;
+      }
       
       res.redirect(finalURL);
     } catch (error) {
@@ -971,7 +988,12 @@ router.get(
       const frontendURL = process.env.NODE_ENV === "production"
         ? process.env.FRONTEND_URL || "https://peda-wala.onrender.com"
         : process.env.FRONTEND_URL || "http://localhost:3000";
-      res.redirect(`${frontendURL}?error=login_failed`);
+      const oauthFlow = req.session?.googleOAuthFlow === "signup" ? "signup" : "login";
+      const authPath = oauthFlow === "signup" ? "/signup" : "/login";
+      const errorURL = new URL(frontendURL);
+      errorURL.pathname = authPath;
+      errorURL.searchParams.set("error", "login_failed");
+      res.redirect(errorURL.toString());
     }
   }
 );
