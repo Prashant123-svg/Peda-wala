@@ -405,13 +405,13 @@ const ProductModal = ({
           ✖
         </button>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 h-auto md:h-80">
           {/* Left: Images */}
-          <div>
+          <div className="h-80 overflow-hidden">
             <img
               src={mainImg}
               alt={product.name}
-              className="w-full h-80 object-cover rounded-lg shadow"
+              className="w-full h-full object-cover rounded-lg shadow"
             />
             {product.images && product.images.length > 1 && (
               <div className="flex gap-2 mt-3 overflow-x-auto">
@@ -432,7 +432,7 @@ const ProductModal = ({
           </div>
 
           {/* Right: Product Info */}
-          <div>
+          <div className="h-80 overflow-y-auto flex flex-col gap-3 pr-2">
             <h3 className="font-bold text-2xl text-gray-800">{product.name}</h3>
             <p className="text-gray-500">{product.category}</p>
             <p className="text-gray-700 mb-3">{product.description}</p>

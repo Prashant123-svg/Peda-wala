@@ -235,13 +235,14 @@ const CategoryDetail: React.FC = () => {
                     className="bg-white rounded-xl shadow-sm hover:shadow-xl border border-gray-200 transition-all cursor-pointer flex flex-col h-full overflow-hidden"
                     onClick={() => navigate(`/product/${productNameToSlug(p.name)}`)}
                   >
-                    <img
-                      src={getImageUrl(p.image)}
-                      onError={(e) => (e.currentTarget.src = FALLBACK_IMAGE_URL)}
-                      alt={p.name}
-                      className="card-img-top"
-                      style={{ height: 180, objectFit: "cover" }}
-                    />
+                    <div className="h-48 overflow-hidden bg-gray-100 flex-shrink-0">
+                      <img
+                        src={getImageUrl(p.image)}
+                        onError={(e) => (e.currentTarget.src = FALLBACK_IMAGE_URL)}
+                        alt={p.name}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
                     <div className="card-body d-flex flex-column p-3">
                       <h5 className="card-title mb-1 fw-bold" style={{ fontSize: "0.98rem", lineHeight: 1.3 }}>{p.name}</h5>
                       <p className="card-text text-muted small mb-2" style={{ lineHeight: 1.45, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
