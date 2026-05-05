@@ -84,12 +84,22 @@ if (googleOAuthConfigured) {
             });
             
             const savedUser = await user.save();
-            console.log(`✅ Google OAuth: User saved successfully! ID: ${savedUser._id}`);
+            console.log(`✅ Google OAuth: User saved successfully! ID: ${savedUser._id}, Email: ${savedUser.email}`);
+            return done(null, savedUser);
           } else {
-            console.log(`✅ Google OAuth: Existing user found! ID: ${user._id}`);
+            console.log(`✅ Google OAuth: Existing user found! ID: ${user._id}, Email: ${user.email}`);
+            
+            // Update googleId if not already set
+            if (!user.googleId) {
+              user.googleId = profile.id;
+              await user.save();
+              console.log(`✅ Google OAuth: Updated googleId for existing user`);
+            }
+            
+            // Return the user with all data populated
+            const updatedUser = await User.findById(user._id);
+            return done(null, updatedUser);
           }
-
-          return done(null, user);
         } catch (error) {
           console.error(`❌ Google OAuth Strategy Error:`, error);
           return done(error, null);
@@ -104,14 +114,22 @@ if (googleOAuthConfigured) {
 }
 
 passport.serializeUser((user, done) => {
-  done(null, user.id);
+  console.log(`🔐 Serializing user: ${user.email} (ID: ${user._id})`);
+  done(null, user._id);
 });
 
 passport.deserializeUser(async (id, done) => {
   try {
+    console.log(`🔐 Deserializing user with ID: ${id}`);
     const user = await User.findById(id);
+    if (!user) {
+      console.error(`❌ User not found during deserialization for ID: ${id}`);
+      return done(null, false);
+    }
+    console.log(`✅ User deserialized successfully: ${user.email}`);
     done(null, user);
   } catch (error) {
+    console.error(`❌ Deserialization error:`, error);
     done(error, null);
   }
 });
@@ -822,20 +840,39 @@ router.get(
 
     return passport.authenticate("google", { failureRedirect: "/login" })(req, res, next);
   },
-  (req, res) => {
+  async (req, res) => {
     try {
-      console.log(`✅ Google OAuth Callback - User found: ${req.user.email}`);
+      // Ensure we have the user from passport
+      if (!req.user) {
+        console.error(`❌ No user found in request after authentication`);
+        const frontendURL = process.env.NODE_ENV === "production"
+          ? process.env.FRONTEND_URL || "https://peda-wala.onrender.com"
+          : process.env.FRONTEND_URL || "http://localhost:3000";
+        return res.redirect(`${frontendURL}?error=no_user`);
+      }
+
+      // Fetch fresh user data from database to ensure we have all fields
+      const freshUser = await User.findById(req.user._id);
+      if (!freshUser) {
+        console.error(`❌ User not found in database with ID: ${req.user._id}`);
+        const frontendURL = process.env.NODE_ENV === "production"
+          ? process.env.FRONTEND_URL || "https://peda-wala.onrender.com"
+          : process.env.FRONTEND_URL || "http://localhost:3000";
+        return res.redirect(`${frontendURL}?error=user_not_found`);
+      }
+
+      console.log(`✅ Google OAuth Callback - User authenticated successfully!`);
       console.log(`📝 User details from database:`, {
-        id: req.user._id,
-        name: req.user.name,
-        email: req.user.email,
-        googleId: req.user.googleId,
-        role: req.user.role,
+        id: freshUser._id,
+        name: freshUser.name,
+        email: freshUser.email,
+        googleId: freshUser.googleId,
+        role: freshUser.role,
       });
 
-      // Create JWT token for the user
+      // Create JWT token for the user using the fresh user data
       const token = jwt.sign(
-        { id: req.user._id, role: req.user.role },
+        { id: freshUser._id, role: freshUser.role },
         process.env.JWT_SECRET,
         { expiresIn: "1d" }
       );
@@ -845,23 +882,23 @@ router.get(
         ? process.env.FRONTEND_URL || "https://peda-wala.onrender.com"
         : process.env.FRONTEND_URL || "http://localhost:3000";
 
-      // Redirect to frontend with token
+      // Redirect to frontend with token and user data
       const redirectURL = new URL(frontendURL);
       redirectURL.searchParams.append("token", token);
       redirectURL.searchParams.append(
         "user",
         JSON.stringify({
-          id: req.user._id,
-          name: req.user.name,
-          email: req.user.email,
-          role: req.user.role,
+          id: freshUser._id,
+          name: freshUser.name,
+          email: freshUser.email,
+          role: freshUser.role,
         })
       );
 
-      console.log("✅ Google OAuth successful - Redirecting to:", redirectURL.origin);
+      console.log(`✅ Google OAuth successful - Redirecting to: ${redirectURL.origin}`);
       res.redirect(redirectURL.toString());
     } catch (error) {
-      console.error("❌ Google OAuth callback error:", error);
+      console.error(`❌ Google OAuth callback error:`, error);
       const frontendURL = process.env.NODE_ENV === "production"
         ? process.env.FRONTEND_URL || "https://peda-wala.onrender.com"
         : process.env.FRONTEND_URL || "http://localhost:3000";
