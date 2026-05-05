@@ -68,21 +68,30 @@ if (googleOAuthConfigured) {
       },
       async (accessToken, refreshToken, profile, done) => {
         try {
-          let user = await User.findOne({ email: profile.emails[0].value });
+          const email = profile.emails[0].value;
+          console.log(`🔍 Google OAuth: Checking for user with email: ${email}`);
+          
+          let user = await User.findOne({ email });
 
           if (!user) {
+            console.log(`➕ Google OAuth: Creating new user for ${email}`);
             user = new User({
               googleId: profile.id,
               name: profile.displayName,
-              email: profile.emails[0].value,
+              email: email,
               role: "user",
-              password: "", // Google OAuth users don't have password
+              // password field is NOT set - will be undefined for Google OAuth users
             });
-            await user.save();
+            
+            const savedUser = await user.save();
+            console.log(`✅ Google OAuth: User saved successfully! ID: ${savedUser._id}`);
+          } else {
+            console.log(`✅ Google OAuth: Existing user found! ID: ${user._id}`);
           }
 
           return done(null, user);
         } catch (error) {
+          console.error(`❌ Google OAuth Strategy Error:`, error);
           return done(error, null);
         }
       }
@@ -815,6 +824,15 @@ router.get(
   },
   (req, res) => {
     try {
+      console.log(`✅ Google OAuth Callback - User found: ${req.user.email}`);
+      console.log(`📝 User details from database:`, {
+        id: req.user._id,
+        name: req.user.name,
+        email: req.user.email,
+        googleId: req.user.googleId,
+        role: req.user.role,
+      });
+
       // Create JWT token for the user
       const token = jwt.sign(
         { id: req.user._id, role: req.user.role },
