@@ -160,7 +160,8 @@ const Categories: React.FC = () => {
               {filtered.map((p) => (
                 <div
                   key={p.id}
-                  className="bg-white rounded-xl shadow-sm hover:shadow-xl border border-gray-200 transition group flex flex-col overflow-hidden"
+                  className="bg-white rounded-xl shadow-sm hover:shadow-xl border border-gray-200 transition group flex flex-col overflow-hidden cursor-pointer"
+                  onClick={() => setSelectedProduct(p)}
                 >
                   <div className="w-full h-44 overflow-hidden bg-gray-100">
                     <img
@@ -184,48 +185,41 @@ const Categories: React.FC = () => {
                       </span>
                     </div>
 
-                    <div className="flex flex-col gap-2 mt-auto pt-3">
+                    <div className="grid grid-cols-2 gap-2 mt-auto pt-3">
                       <button
-                        className="w-full bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-semibold py-1.5 rounded-lg transition"
-                        onClick={() => setSelectedProduct(p)}
+                        className="bg-yellow-400 hover:bg-yellow-500 text-gray-900 text-xs sm:text-sm font-semibold py-1.5 rounded-lg transition"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          addToCart({
+                            id: p.id,
+                            name: p.name,
+                            price: p.price,
+                            image: getImageUrl(p.image),
+                            qty: 1,
+                            variant: "250g", // ✅ Default weight variant
+                          })
+                        }}
                       >
-                        👁️ View Details
+                        Add
                       </button>
 
-                      <div className="grid grid-cols-2 gap-2">
-                        <button
-                          className="bg-yellow-400 hover:bg-yellow-500 text-gray-900 text-xs sm:text-sm font-semibold py-1.5 rounded-lg transition"
-                          onClick={() =>
-                            addToCart({
-                              id: p.id,
-                              name: p.name,
-                              price: p.price,
-                              image: getImageUrl(p.image),
-                              qty: 1,
-                              variant: "250g", // ✅ Default weight variant
-                            })
+                      <button
+                        className="bg-green-500 hover:bg-green-600 text-white text-xs sm:text-sm font-semibold py-1.5 rounded-lg transition"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          const token = localStorage.getItem("token");
+                          if (!token) {
+                            alert("Please login first to buy products! 🔐");
+                            navigate("/login", { state: { from: "/categories" } });
+                            return;
                           }
-                        >
-                          Add
-                        </button>
-
-                        <button
-                          className="bg-green-500 hover:bg-green-600 text-white text-xs sm:text-sm font-semibold py-1.5 rounded-lg transition"
-                          onClick={() => {
-                            const token = localStorage.getItem("token");
-                            if (!token) {
-                              alert("Please login first to buy products! 🔐");
-                              navigate("/login", { state: { from: "/categories" } });
-                              return;
-                            }
-                            navigate("/checkout", {
-                              state: { cart: [{ ...p, qty: 1 }] },
-                            });
-                          }}
-                        >
-                          Buy
-                        </button>
-                      </div>
+                          navigate("/checkout", {
+                            state: { cart: [{ ...p, qty: 1 }] },
+                          });
+                        }}
+                      >
+                        Buy
+                      </button>
                     </div>
                   </div>
                 </div>

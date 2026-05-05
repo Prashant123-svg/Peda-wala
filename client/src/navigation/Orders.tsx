@@ -96,15 +96,6 @@ const Orders: React.FC = () => {
   const userRole = localStorage.getItem("userRole");
   const isAdmin = contextIsAdmin === true || userRole === "admin";
 
-  // ✅ Protect Orders page - require login
-  useEffect(() => {
-    const token = localStorage.getItem("authToken") || localStorage.getItem("token");
-    if (!token) {
-      alert("Please login to access orders 🔐");
-      navigate("/login", { replace: true, state: { from: "/orders" } });
-    }
-  }, [navigate]);
-
   useEffect(() => {
     console.log(`📦 Orders Debug - ContextIsAdmin: ${contextIsAdmin}, UserRole: ${userRole}, FinalIsAdmin: ${isAdmin}`);
   }, [contextIsAdmin, userRole, isAdmin]);
@@ -177,6 +168,14 @@ const Orders: React.FC = () => {
   };
 
   const handlePlaceOrder = async () => {
+    const token = localStorage.getItem("authToken") || localStorage.getItem("token");
+    
+    if (!token) {
+      alert("🔐 Please login first to place an order!");
+      navigate("/login", { state: { from: "/orders" } });
+      return;
+    }
+
     if (!address.name.trim()) {
       setError("Full name is required");
       return;
@@ -217,13 +216,6 @@ const Orders: React.FC = () => {
       setError("");
 
       const totalPrice = getCartTotal();
-      const token = localStorage.getItem("authToken") || localStorage.getItem("token");
-      
-      if (!token) {
-        setError("Please login to place an order");
-        setLoading(false);
-        return;
-      }
 
       const apiUrl = `${API_BASE_URL}/orders/create-order`;
 
@@ -625,7 +617,15 @@ const Orders: React.FC = () => {
                     <p className="text-yellow-100 text-sm">Complete your order in just 2 steps</p>
                   </div>
                   <button
-                    onClick={() => setShowForm(true)}
+                    onClick={() => {
+                      const token = localStorage.getItem("authToken") || localStorage.getItem("token");
+                      if (!token) {
+                        alert("🔐 Please login first to checkout your order!");
+                        navigate("/login", { state: { from: "/orders" } });
+                        return;
+                      }
+                      setShowForm(true);
+                    }}
                     className="w-full px-6 py-3 bg-white hover:bg-gray-100 text-yellow-600 font-bold rounded-lg transition-all transform hover:scale-105"
                   >
                     ✓ Checkout Now
