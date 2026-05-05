@@ -21,7 +21,6 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   // Load user from localStorage on mount
   const loadUserFromStorage = useCallback(() => {
@@ -65,13 +64,6 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     window.addEventListener("storage", handleStorageChange);
     return () => window.removeEventListener("storage", handleStorageChange);
   }, [loadUserFromStorage]);
-
-  // Watch for refresh trigger (for programmatic updates)
-  useEffect(() => {
-    if (refreshTrigger > 0) {
-      loadUserFromStorage();
-    }
-  }, [refreshTrigger, loadUserFromStorage]);
 
   const logout = () => {
     localStorage.removeItem("token");
