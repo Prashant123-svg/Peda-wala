@@ -34,6 +34,7 @@ const Login = () => {
         console.log("✅ Parsed user data:", user);
         console.log("💾 Saving to localStorage...");
         
+        // Save all user data to localStorage
         localStorage.setItem("token", token);
         localStorage.setItem("userId", user.id);
         localStorage.setItem("userName", user.name);
@@ -41,15 +42,30 @@ const Login = () => {
         localStorage.setItem("userRole", user.role || "user");
 
         console.log("✅ Data saved to localStorage");
+        console.log("📋 Saved user data:", {
+          userId: user.id,
+          userName: user.name,
+          userEmail: user.email,
+          userRole: user.role || "user"
+        });
+        
+        // Dispatch storage event to notify other tabs and listeners
+        window.dispatchEvent(new StorageEvent('storage', {
+          key: 'token',
+          newValue: token,
+          oldValue: null,
+          storageArea: localStorage
+        }));
+
         console.log("✅ Google login successful for:", user.email);
         success("✅ Google login successful! Welcome back to Peda-Wale!");
         
-        // Clear URL params and redirect
+        // Clear URL params and redirect with a small delay to ensure state updates
         setTimeout(() => {
           console.log("🔄 Redirecting to home page...");
           window.history.replaceState({}, document.title, window.location.pathname);
           navigate("/", { replace: true });
-        }, 800);
+        }, 500);
       } catch (err) {
         console.error("❌ Error parsing user data:", err);
         console.error("❌ userParam value:", userParam);

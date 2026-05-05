@@ -21,6 +21,7 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   // Load user from localStorage on mount
   const loadUserFromStorage = useCallback(() => {
@@ -30,7 +31,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const userEmail = localStorage.getItem("userEmail");
     const userRole = localStorage.getItem("userRole") as "user" | "admin" | "deliveryBoy" | null;
 
-    console.log(`📦 UserContext Loading - Role: ${userRole}, Token: ${!!token}`);
+    console.log(`📦 UserContext Loading - Role: ${userRole}, Token: ${!!token}, User: ${userName}`);
 
     if (token && userId && userName && userRole) {
       setUser({
@@ -39,18 +40,38 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
         email: userEmail || "",
         role: userRole,
       });
+      console.log(`✅ User loaded from localStorage:`, { id: userId, name: userName, role: userRole });
     } else if (!token) {
+      console.log(`❌ No token found, clearing user`);
       setUser(null);
     }
   }, []);
 
+  // Initial load on mount
   useEffect(() => {
     loadUserFromStorage();
-    
-    // Listen for storage changes (in case user logs in from another tab)
-    window.addEventListener("storage", loadUserFromStorage);
-    return () => window.removeEventListener("storage", loadUserFromStorage);
   }, [loadUserFromStorage]);
+
+  // Watch for storage changes from OAuth callback
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      console.log(`🔄 Storage event detected - Key: ${e.key}, NewValue: ${e.newValue}`);
+      if (e.key === "token" || e.key === "userId" || e.key === "userRole") {
+        console.log(`🔄 Auth data changed, reloading user...`);
+        loadUserFromStorage();
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, [loadUserFromStorage]);
+
+  // Watch for refresh trigger (for programmatic updates)
+  useEffect(() => {
+    if (refreshTrigger > 0) {
+      loadUserFromStorage();
+    }
+  }, [refreshTrigger, loadUserFromStorage]);
 
   const logout = () => {
     localStorage.removeItem("token");
