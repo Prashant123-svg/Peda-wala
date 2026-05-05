@@ -85,6 +85,30 @@ app.use("/api/profile", profileCompletionRoutes);
 app.use("/api/delivery", deliveryManagement);
 app.use("/api/chat", chatbotRoutes);
 
+// OAuth/landing fallback: if Google or a stale link lands on the backend root
+// or on auth-style paths, bounce the user to the frontend instead of 404.
+app.get(["/", "/login", "/signup"], (req, res) => {
+  const frontendURL = process.env.NODE_ENV === "production"
+    ? process.env.FRONTEND_URL || "https://peda-wala.onrender.com"
+    : process.env.FRONTEND_URL || "http://localhost:3000";
+
+  const redirectURL = new URL(frontendURL);
+
+  if (req.query.token) {
+    redirectURL.searchParams.set("token", String(req.query.token));
+  }
+
+  if (req.query.user) {
+    redirectURL.searchParams.set("user", String(req.query.user));
+  }
+
+  if (req.query.error) {
+    redirectURL.searchParams.set("error", String(req.query.error));
+  }
+
+  return res.redirect(redirectURL.toString());
+});
+
 // ✅ Debug: List all registered routes
 app.get("/api/debug/routes", (req, res) => {
   const routes = [];
