@@ -16,23 +16,29 @@ export const NotificationContainer: React.FC<NotificationContainerProps> = ({
   onRemoveNotification,
 }) => {
   return (
-    <div className="notification-container">
+    <div className="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 flex flex-col gap-3 w-full max-w-md px-4 sm:max-w-lg pointer-events-none">
       {notifications.map((notification) => (
         <div
           key={notification.id}
-          className={`notification notification-${notification.type} animate-in`}
+          className={`notification notification-${notification.type} animate-in pointer-events-auto rounded-lg shadow-lg p-4 flex items-center justify-between gap-3 ${
+            notification.type === "error"
+              ? "bg-red-50 border border-red-200 text-red-800"
+              : notification.type === "success"
+              ? "bg-green-50 border border-green-200 text-green-800"
+              : "bg-blue-50 border border-blue-200 text-blue-800"
+          }`}
           onAnimationEnd={() => onRemoveNotification(notification.id)}
         >
-          <div className="notification-content">
-            <span className="notification-message">{notification.message}</span>
-            <button
-              className="notification-close"
-              onClick={() => onRemoveNotification(notification.id)}
-              aria-label="Close notification"
-            >
-              ✕
-            </button>
+          <div className="notification-content flex-1">
+            <span className="notification-message font-semibold">{notification.message}</span>
           </div>
+          <button
+            className="notification-close flex-shrink-0 hover:opacity-70 transition-opacity"
+            onClick={() => onRemoveNotification(notification.id)}
+            aria-label="Close notification"
+          >
+            ✕
+          </button>
         </div>
       ))}
     </div>
