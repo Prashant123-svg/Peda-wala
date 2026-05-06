@@ -39,6 +39,13 @@ axios.interceptors.response.use(
       localStorage.removeItem("userEmail");
       localStorage.removeItem("userRole");
 
+      window.dispatchEvent(
+        new StorageEvent("storage", {
+          key: "token",
+          newValue: null,
+        })
+      );
+
       // Redirect to login
       window.location.href = "/Login";
     }
