@@ -195,7 +195,7 @@ router.post("/send-otp", authMiddleware, async (req, res) => {
 
     // Console fallback (non-production / local development)
     // Treat any environment other than explicit 'production' as development/local
-    if (!sentSuccessfully && process.env.NODE_ENV !== "production") {
+    if (!sentSuccessfully) {
       console.log(`└─ 🔐 Console: ${otp}\n`);
       otpSentVia = "console";
       successMessage = `🔐 OTP: ${otp} (Check server console)`;
@@ -203,12 +203,18 @@ router.post("/send-otp", authMiddleware, async (req, res) => {
     }
 
     if (!sentSuccessfully) {
+      const emailConfigError = !transporter 
+        ? "Email service not configured. Set EMAIL_USER and EMAIL_PASS in .env"
+        : "Email sending failed";
+      
       return res.status(500).json({ 
-        message: "Error sending OTP. Check email credentials in .env file.",
+        message: emailConfigError,
+        phone: formattedPhone,
         debug: {
-          emailOk: !!transporter,
-          twilioOk: !!twilioClient,
-          nodeEnv: process.env.NODE_ENV
+          emailConfigured: !!transporter,
+          twilioConfigured: !!twilioClient,
+          nodeEnv: process.env.NODE_ENV,
+          helpText: "To send OTP via email, configure EMAIL_USER and EMAIL_PASS in .env file"
         }
       });
     }
