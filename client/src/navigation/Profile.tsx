@@ -672,7 +672,16 @@ const Profile = () => {
 
                 {phoneVerificationMode && !user.isPhoneVerified && (
                   <div className="mt-4 space-y-3">
-                    {otpError && <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">{otpError}</div>}
+                    {otpError && (
+                      <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
+                        <p className="font-semibold mb-1">⚠️ {otpError}</p>
+                        {otpError.includes("Email service not configured") && (
+                          <p className="text-xs text-red-600 mt-1">
+                            💡 Tip: The admin needs to configure EMAIL_USER and EMAIL_PASS in the server's .env file. Until then, check the server console for the OTP code.
+                          </p>
+                        )}
+                      </div>
+                    )}
                     {otpSuccess && <div className="p-3 bg-green-50 border border-green-200 text-green-700 rounded-lg text-sm">{otpSuccess}</div>}
 
                     {!otpSent ? (
