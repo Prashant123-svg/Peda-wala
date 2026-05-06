@@ -3,6 +3,7 @@ import { CATEGORY_FILES } from "../constants/categoryFiles";
 import type { Product } from "../types/Product";
 import SideBar from "../components/SideBar";
 import { useCart } from "../context/CartContext";
+import { useNotificationContext } from "../context/NotificationContext";
 import ProductModal from "../components/ProductModal";
 import { useNavigate, useLocation } from "react-router-dom";
 import { FALLBACK_IMAGE_URL, resolveImageUrl } from "../utils/imageUrl";
@@ -30,6 +31,7 @@ const Categories: React.FC = () => {
 
   const navigate = useNavigate();
   const { addToCart } = useCart();
+  const { error: showError } = useNotificationContext();
 
   useEffect(() => {
     const file = CATEGORY_FILES[selectedCategory];
@@ -209,7 +211,7 @@ const Categories: React.FC = () => {
                           e.stopPropagation();
                           const token = localStorage.getItem("token");
                           if (!token) {
-                            alert("Please login first to buy products! 🔐");
+                            showError("🔐 Please login first to buy products!");
                             navigate("/login", { state: { from: "/categories" } });
                             return;
                           }

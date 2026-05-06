@@ -4,6 +4,7 @@ import hero1 from "../assets/hero1.jpg";
 import hero2 from "../assets/hero2.jpg";
 import { BiSolidOffer } from "react-icons/bi";
 import { useCart } from "../context/CartContext";
+import { useNotificationContext } from "../context/NotificationContext";
 import { API_ORIGIN } from "../utils/apiConfig";
 
 const fallbackImg = `${API_ORIGIN}/images/products/pedhe.jpeg`;
@@ -23,6 +24,7 @@ const handleImageError = (event: React.SyntheticEvent<HTMLImageElement>) => {
 export default function Home() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { success } = useNotificationContext();
   
   // Scroll to bestsellers if navigated with ?section=bestsellers or #bestsellers
   useEffect(() => {
@@ -155,7 +157,7 @@ export default function Home() {
       qty: 1,
       variant: "250g", // ✅ Default weight variant
     });
-    alert("Item added to cart ✅ (250g)");
+    success("🛒 Item added to cart! (250g)");
   };
 
   return (
