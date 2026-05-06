@@ -72,6 +72,13 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.removeItem("userEmail");
     localStorage.removeItem("userRole");
     setUser(null);
+
+    window.dispatchEvent(
+      new StorageEvent("storage", {
+        key: "token",
+        newValue: null,
+      })
+    );
   };
 
   const refreshUser = useCallback(async () => {
