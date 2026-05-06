@@ -7,7 +7,7 @@ import { useUserContext } from "../context/UserContext";
 
 const Header = () => {
   const navigate = useNavigate();
-  const { user, isAdmin: contextIsAdmin, refreshUser } = useUserContext();
+  const { user, isAdmin: contextIsAdmin, logout, refreshUser } = useUserContext();
   const token = localStorage.getItem("token");
   const userRole = localStorage.getItem("userRole");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -42,16 +42,7 @@ const Header = () => {
   }, []);
 
   const handleLogout = () => {
-    const userId = localStorage.getItem("userId");
-    localStorage.removeItem("token");
-    localStorage.removeItem("userId"); // ✅ Clear user-specific data
-    localStorage.removeItem("userName");
-    localStorage.removeItem("userEmail");
-    localStorage.removeItem("userRole");
-    // ✅ Clear user's cart from localStorage
-    if (userId) {
-      localStorage.removeItem(`pedhewala_cart_${userId}`);
-    }
+    logout();
     navigate("/Login");
   };
 
