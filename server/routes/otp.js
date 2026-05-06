@@ -193,8 +193,9 @@ router.post("/send-otp", authMiddleware, async (req, res) => {
       }
     }
 
-    // Console fallback (development mode)
-    if (!sentSuccessfully && process.env.NODE_ENV === "development") {
+    // Console fallback (non-production / local development)
+    // Treat any environment other than explicit 'production' as development/local
+    if (!sentSuccessfully && process.env.NODE_ENV !== "production") {
       console.log(`└─ 🔐 Console: ${otp}\n`);
       otpSentVia = "console";
       successMessage = `🔐 OTP: ${otp} (Check server console)`;
