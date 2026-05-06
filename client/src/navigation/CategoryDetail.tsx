@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import logo from "../assets/logo.png";
 import { useLocation, useNavigate, useParams, Link } from "react-router-dom";
 import { CATEGORY_FILES } from "../constants/categoryFiles";
 import type { Product } from "../types/Product";
@@ -146,6 +147,9 @@ const CategoryDetail: React.FC = () => {
     return resolveImageUrl(image, FALLBACK_IMAGE_URL);
   };
 
+  // Choose hero background: category image if present, otherwise site logo
+  const heroBackground = categoryInfo.image ? getImageUrl(categoryInfo.image) : logo;
+
   const handleAddToCart = (p: Product) => {
     addToCart({
       id: p.id,
@@ -171,7 +175,7 @@ const CategoryDetail: React.FC = () => {
       {/* Hero Banner */}
       <div
         className="relative h-96 bg-cover bg-center hero-aligned"
-        style={{ backgroundImage: `url(${categoryInfo.image})` }}
+        style={{ backgroundImage: `url(${heroBackground})` }}
       >
         <div className="absolute inset-0 bg-black/40"></div>
         <div className="relative h-full flex flex-col items-center justify-center text-white px-4">
