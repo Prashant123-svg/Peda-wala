@@ -44,6 +44,13 @@
             localStorage.setItem("userEmail", user.email);
             localStorage.setItem("userRole", user.role || "user");
 
+            window.dispatchEvent(
+              new StorageEvent("storage", {
+                key: "token",
+                newValue: token,
+              })
+            );
+
             console.log("✅ Data saved to localStorage");
             console.log("📋 Saved user data:", {
               userId: user.id,
@@ -85,6 +92,13 @@
         localStorage.setItem("userName", res.data.user.name); // ✅ user name save
         localStorage.setItem("userEmail", res.data.user.email); // ✅ user email save
         localStorage.setItem("userRole", res.data.user.role || "user"); // ✅ user role save (admin or user)
+
+        window.dispatchEvent(
+          new StorageEvent("storage", {
+            key: "token",
+            newValue: res.data.token,
+          })
+        );
         
         const userRole = res.data.user.role;
         console.log("💾 Saved to localStorage - Role:", userRole);
