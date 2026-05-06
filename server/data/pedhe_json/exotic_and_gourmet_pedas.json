@@ -133,7 +133,7 @@
       "category": "Exotic & Gourmet Pedas",
       "description": "Delicious exotic & gourmet pedas - Honey Nut Supreme Peda.",
       "price": 280,
-      "image": "/images/exotic_and_gourmet_pedas/honey_nut_supreme_peda.jpeg",
+      "image": "/images/exotic_and_gourmet_pedas/honey_nut_supreme_peda.png",
       "availability": true
     },
     {
@@ -142,7 +142,7 @@
       "category": "Exotic & Gourmet Pedas",
       "description": "Delicious exotic & gourmet pedas - Premium Dry Fruit Peda.",
       "price": 300,
-      "image": "/images/exotic_and_gourmet_pedas/premium_dry_fruit_peda.jpeg",
+      "image": "/images/exotic_and_gourmet_pedas/premium_dry_fruit_peda.png",
       "availability": true
     },
     {
@@ -160,7 +160,7 @@
       "category": "Exotic & Gourmet Pedas",
       "description": "Delicious exotic & gourmet pedas - Choco Mint Peda.",
       "price": 340,
-      "image": "/images/exotic_and_gourmet_pedas/choco_mint_peda.jpeg",
+      "image": "/images/exotic_and_gourmet_pedas/choco_mint_peda.png",
       "availability": true
     },
     {
@@ -169,7 +169,7 @@
       "category": "Exotic & Gourmet Pedas",
       "description": "Delicious exotic & gourmet pedas - Luxury Fusion Peda.",
       "price": 360,
-      "image": "/images/exotic_and_gourmet_pedas/luxury_fusion_peda.jpeg",
+      "image": "/images/exotic_and_gourmet_pedas/luxury_fusion_peda.png",
       "availability": true
     },
     {
@@ -178,7 +178,7 @@
       "category": "Exotic & Gourmet Pedas",
       "description": "Delicious exotic & gourmet pedas - Kesar Royal Peda.",
       "price": 380,
-      "image": "/images/exotic_and_gourmet_pedas/kesar_royal_peda.jpeg",
+      "image": "/images/exotic_and_gourmet_pedas/kesar_royal_peda.png",
       "availability": true
     },
     {
@@ -187,7 +187,7 @@
       "category": "Exotic & Gourmet Pedas",
       "description": "Delicious exotic & gourmet pedas - Exotic Mix Peda.",
       "price": 200,
-      "image": "/images/exotic_and_gourmet_pedas/exotic_mix_peda.jpeg",
+      "image": "/images/exotic_and_gourmet_pedas/exotic_mix_peda.png",
       "availability": true
     }
   ]

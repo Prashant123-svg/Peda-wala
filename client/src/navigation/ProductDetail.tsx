@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
+import { useNotificationContext } from "../context/NotificationContext";
 import { API_BASE_URL } from "../utils/apiConfig";
 
 interface Weight {
@@ -34,6 +35,7 @@ const productSlugToId: Record<string, number> = {
 const ProductDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { success } = useNotificationContext();
   
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
@@ -119,7 +121,7 @@ const ProductDetail: React.FC = () => {
       image: mainImg,
       qty,
     });
-    alert("Item added to cart ✅");
+    success("🛒 Item added to cart!");
   };
 
   const handleBuyNow = () => {

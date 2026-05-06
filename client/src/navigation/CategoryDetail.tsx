@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
+import logo from "../assets/logo.png";
 import { useLocation, useNavigate, useParams, Link } from "react-router-dom";
 import { CATEGORY_FILES } from "../constants/categoryFiles";
 import type { Product } from "../types/Product";
 import { useCart } from "../context/CartContext";
+import { useNotificationContext } from "../context/NotificationContext";
 import ProductModal from "../components/ProductModal";
 import { FALLBACK_IMAGE_URL, resolveImageUrl } from "../utils/imageUrl";
 import { API_BASE_URL } from "../utils/apiConfig";
@@ -28,6 +30,7 @@ const CategoryDetail: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { name } = useParams<{ name: string }>();
+  const { success } = useNotificationContext();
   
   let categoryInfo = location.state?.category as CategoryInfo | undefined;
 
@@ -146,6 +149,9 @@ const CategoryDetail: React.FC = () => {
     return resolveImageUrl(image, FALLBACK_IMAGE_URL);
   };
 
+  // Choose hero background: category image if present, otherwise site logo
+  const heroBackground = categoryInfo.image ? getImageUrl(categoryInfo.image) : logo;
+
   const handleAddToCart = (p: Product) => {
     addToCart({
       id: p.id,
@@ -155,7 +161,7 @@ const CategoryDetail: React.FC = () => {
       qty: 1,
       variant: "250g", // ✅ Default weight variant
     });
-    alert("Item added to cart ✅ (250g)");
+    success("🛒 Item added to cart! (250g)");
   };
 
   const filteredProducts = products.filter(
@@ -171,7 +177,7 @@ const CategoryDetail: React.FC = () => {
       {/* Hero Banner */}
       <div
         className="relative h-96 bg-cover bg-center hero-aligned"
-        style={{ backgroundImage: `url(${categoryInfo.image})` }}
+        style={{ backgroundImage: `url(${heroBackground})` }}
       >
         <div className="absolute inset-0 bg-black/40"></div>
         <div className="relative h-full flex flex-col items-center justify-center text-white px-4">

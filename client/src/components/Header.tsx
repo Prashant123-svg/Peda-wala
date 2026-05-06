@@ -7,7 +7,7 @@ import { useUserContext } from "../context/UserContext";
 
 const Header = () => {
   const navigate = useNavigate();
-  const { user, isAdmin: contextIsAdmin, refreshUser } = useUserContext();
+  const { user, isAdmin: contextIsAdmin, logout, refreshUser } = useUserContext();
   const token = localStorage.getItem("token");
   const userRole = localStorage.getItem("userRole");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -42,13 +42,7 @@ const Header = () => {
   }, []);
 
   const handleLogout = () => {
-    // Clear auth tokens but preserve cart for when user logs back in
-    localStorage.removeItem("token");
-    localStorage.removeItem("userId");
-    localStorage.removeItem("userName");
-    localStorage.removeItem("userEmail");
-    localStorage.removeItem("userRole");
-    // ✅ KEEP cart in localStorage so it's available when user logs back in
+    logout();
     navigate("/Login");
   };
 

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
+import { useNotificationContext } from "../context/NotificationContext";
 import { API_BASE_URL, API_ORIGIN } from "../utils/apiConfig";
 
 interface Product {
@@ -17,6 +18,7 @@ const Products = () => {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("All Categories");
   const navigate = useNavigate();
+  const { success } = useNotificationContext();
   const { cart, addToCart } = useCart();
 
   const categories = [
@@ -82,7 +84,7 @@ const Products = () => {
       qty: 1,
       variant: "250g", // ✅ Default weight variant
     });
-    alert("Item added to cart ✅ (250g)");
+    success("🛒 Item added to cart! (250g)");
   };
 
   const buyNow = (product: Product) => {

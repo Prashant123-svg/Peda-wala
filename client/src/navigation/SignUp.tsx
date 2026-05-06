@@ -45,6 +45,13 @@ const Signup = () => {
           localStorage.setItem("userEmail", user.email);
           localStorage.setItem("userRole", user.role || "user");
 
+          window.dispatchEvent(
+            new StorageEvent("storage", {
+              key: "token",
+              newValue: token,
+            })
+          );
+
           console.log("✅ Data saved to localStorage");
           console.log("📋 Saved user data:", {
             userId: user.id,
